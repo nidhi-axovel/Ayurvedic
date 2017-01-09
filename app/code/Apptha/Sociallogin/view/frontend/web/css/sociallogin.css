@@ -1,0 +1,416 @@
+/**
+ * Apptha
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.apptha.com/LICENSE.txt
+ *
+ * ==============================================================
+ *                 MAGENTO EDITION USAGE NOTICE
+ * ==============================================================
+ * This package designed for Magento COMMUNITY edition
+ * Apptha does not guarantee correct work of this extension
+ * on any other Magento edition except Magento COMMUNITY edition.
+ * Apptha does not provide extension support in case of
+ * incorrect edition usage.
+ * ==============================================================
+ *
+ * @category    Apptha
+ * @package     Apptha_Sociallogin
+ * @version     1.0
+ * @author      Apptha Team <developers@contus.in>
+ * @copyright   Copyright (c) 2015 Apptha. (http://www.apptha.com)
+ * @license     http://www.apptha.com/LICENSE.txt
+ *
+ * */
+#header_logo_Div {
+	z-index: 999991;
+	position: fixed;
+	box-sizing: border-box;
+	padding: 10px;
+	width: 45%;
+	background: #333 transparent;
+	/*background: url(images/social_popup_bg.png) repeat !important; */
+	left: 27%;
+	top: 4%;
+}
+
+div#header_logo_Div {
+	background: white;
+	padding: 20px;
+	border: 6px solid rgba(0, 0, 0, 0.3);
+	background-clip: padding-box;
+	height: auto;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+div#header_logo_Div h1 {
+	font-size: 29px;
+	margin-bottom: 17px;
+}
+
+.new_account_create {
+	box-sizing: border-box;
+	font-size: 13px;
+	margin: 19px 0 17px;
+	color: #444;
+	float: left;
+	border: 1px solid #DDD;
+	background: #f5f6f6;
+	padding: 7px 10px;
+	width: 92%;
+}
+
+div#login-block {
+	float: left;
+	width: 87%;
+}
+
+.signin-form {
+	box-sizing: border-box;
+	padding-right: 25px; /* border-right: 1px dotted #ccc; */
+}
+
+.form-create-account .fieldset .field {
+	margin: 0 0 12px;
+}
+
+.form-create-account {
+	width: 87%;
+	clear: left;
+	box-sizing: border-box;
+	float: left;
+	padding-right: 32px;
+}
+
+div#all_social_iconbtn {
+	width: 39%;
+	float: right;
+	position: relative;
+}
+
+div#all_social_iconbtn ul li {
+	list-style: none;
+}
+
+div#all_social_iconbtn h4 {
+	margin-left: 30px;
+}
+
+.fieldset {
+	margin-bottom: 21px !important;
+}
+
+div#twitter_block {
+	width: 87%;
+}
+
+.social_login_btn {
+	margin-top: 10px;
+}
+
+.socialpopup-input-box {
+	width: 100%;
+	float: left;
+	padding-bottom: 29px;
+}
+
+.fb_login {
+	background: url(images/facebook-bg.jpg) repeat-x !important;
+}
+
+.twitter_login {
+	background: url(images/twitter-bg.jpg) repeat-x !important;
+	/* width: 72%; */ /* padding: 0px 0px 0px 10px; */
+/* border-radius: 0px; */ /* line-height: 26px; */ /* border: 0px; */
+/* box-sizing: border-box; */ /* text-align: left; */ /* color: #fff; */
+}
+
+.google_login {
+	background: url(images/gplus_bg.jpg) repeat-x !important;
+}
+
+.yahoo_login {
+	background: url(images/yahoo_bg.jpg) repeat-x;
+}
+
+.linkedin_login {
+	box-sizing: border-box;
+	border: 0;
+	width: 179px;
+	height: 26px;
+	float: left;
+	background-position: 0 -58px;
+}
+
+.twitter_popup_btn {
+	float: right;
+	margin: 0;
+}
+
+.linkedin_popup_input, .twitter_popup_input {
+	width: 97%;
+}
+
+.apptha_twitter_error {
+	color: red;
+	width: 200px;
+}
+
+.icon_left_grid {
+	display: block;
+	width: 28px;
+	height: 26px;
+	float: left;
+	background: url(images/social_login_sprite.png);
+}
+
+.icon_right_grid {
+	display: block;
+	width: 10px;
+	height: 29px;
+	float: right; /* background: url(images/social_login_sprite.png); */
+}
+
+.social_login_particular_button {
+	width: 100%;
+}
+
+.actions-toolbar {
+	margin-top: 10px;
+	text-align: left;
+}
+
+.actions-toolbar button {
+	float: left;
+}
+
+.f_icon_left {
+	background-position: 0px 0px;
+}
+
+.f_icon_right {
+	background-position: -28px 0;
+}
+
+.apptha_progress_image_facebooklogin {
+	padding: 5px 0 0 5px;
+}
+
+.t_icon_left {
+	background-position: 73px -29px;
+	/* background: url(images/social_login_sprite.png); */
+}
+
+.t_icon_right {
+	background-position: -28px -28px;
+}
+
+.gplus_icon_left {
+	background-position: 0 -115px;
+}
+
+.gplus_icon_right {
+	background-position: -28px -115px;
+}
+
+.yahoo_icon_left {
+	background-position: 0 -86px;
+}
+
+.yahoo_icon_right {
+	background-position: -28px -86px;
+}
+
+.inner_social_grid {
+	width: 72%;
+	padding: 0px 0px 0px 10px;
+	line-height: 26px;
+	border: 0px;
+	box-sizing: border-box;
+	text-align: left;
+	color: #fff;
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-top-left-radius: 0px;
+	border-bottom-left-radius: 0px;
+	box-shadow: inset 0 0 0 0 #fff !important;
+}
+
+.inner_social_grid:hover {
+	width: 72%;
+	padding: 0px 0px 0px 10px;
+	line-height: 26px;
+	border: 0px;
+	box-sizing: border-box;
+	text-align: left;
+	color: #fff;
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-top-left-radius: 0px;
+	border-bottom-left-radius: 0px;
+}
+
+a.closeLink {
+	top: 6px;
+	right: -7px;
+	width: 26px;
+	height: 26px;
+	position: absolute;
+	z-index: 9999;
+	cursor: pointer;
+	background: url(images/btn-close.png) no-repeat;
+}
+
+.inner_social_grid:focus {
+	width: 72%;
+	padding: 0px 0px 0px 10px;
+	line-height: 26px;
+	border: 0px;
+	box-sizing: border-box;
+	text-align: left;
+	color: #fff;
+	border-top-right-radius: 4px;
+	border-bottom-right-radius: 4px;
+	border-top-left-radius: 0px;
+	border-bottom-left-radius: 0px;
+	box-shadow: inset 0 0 0 0 #fff !important;
+}
+
+.bg_fade {
+	background-color: #000;
+	bottom: 0;
+	height: 100%;
+	left: 0;
+	margin: 0;
+	padding: 0;
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 1000;
+	opacity: 0.5;
+}
+
+@media only screen and (min-width:280px) and (max-width:1024px) and
+	(orientation : portrait) {
+	#header_logo_Div {
+		width: 89%;
+		left: 5%;
+		position: absolute !important; /* height: 95%; */
+	}
+	div#all_social_iconbtn {
+		width: 100%;
+	}
+	.signin-form {
+		border-right: 0px;
+		padding-right: 0;
+	}
+	div#login-block {
+		width: 100%;
+	}
+	div#header_logo_Div .primary {
+		width: auto;
+		float: right;
+	}
+	.new_account_create {
+		width: 100%;
+	}
+	div#all_social_iconbtn h4 {
+		margin-bottom: 10px;
+	}
+	.inner_social_grid {
+		width: 40%;
+	}
+	.form-create-account {
+		width: 100%;
+		border-right: 0px;
+		padding-right: 0;
+	}
+}
+
+@media only screen and (min-width:280px) and (max-width:1024px) and
+	(orientation : landscape) {
+	#header_logo_Div {
+		width: 58%;
+		left: 22%;
+		position: absolute !important;
+	}
+	div#all_social_iconbtn {
+		width: 100%;
+	}
+	.signin-form {
+		border-right: 0px;
+		padding-right: 0;
+	}
+	div#login-block {
+		width: 100%;
+	}
+	div#header_logo_Div .primary {
+		width: auto;
+		float: right;
+	}
+	.new_account_create {
+		width: 100%;
+	}
+	div#all_social_iconbtn h4 {
+		margin-bottom: 10px;
+	}
+	.inner_social_grid {
+		width: 60%;
+	}
+	.form-create-account {
+		width: 100%;
+		border-right: 0px;
+		padding-right: 0;
+	}
+}
+
+.signin-or {
+	background: url("images/or.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+	height: 40px;
+	margin-top: -41px;
+	position: absolute;
+	top: 50%;
+	width: 40px;
+	left: 52.4%;
+}
+
+.left_login {
+	width: 56%;
+	float: left;
+	border-right: 1px dotted #ccc;
+}
+
+div#forget_password_div {
+	width: 92%;
+}
+
+.social_login_particular_button:hover {
+	opacity: 0.8;
+}
+div#all_social_iconbtn ul{padding:0;}
+
+.already_have_account {
+    clear: both;
+    overflow: hidden;
+    padding-top: 10px;
+}
+.form-create-account .fieldset > .legend { margin: 0 0 0px; padding: 0 0 5px; }
+.form-create-account .fieldset .field { margin: 0 0 10px; }
+ div#header_logo_Div .form-create-account h1 { font-size: 29px; margin-bottom: 10px; }
+.form-create-account .fieldset { margin-bottom: 5px !important; }
+.form-create-account .fieldset > .field > .label{margin:0;}
+.form-create-account div.mage-error[generated] { margin-top: 0px; }
+
+@media screen and (max-width: 700px){
+.left_login{width:100%;    border-right: none;}	
+.signin-or{display:none;}
+div#header_logo_Div h1 ,div#header_logo_Div .form-create-account h1 { font-size: 21px; margin-bottom: 10px; }
+.fieldset { margin-bottom: 10px !important; }
+.fieldset>.field, .fieldset>.fields>.field { margin: 0 0 10px; }
+.nav-before-open body{overflow: visible !important;}
+	}

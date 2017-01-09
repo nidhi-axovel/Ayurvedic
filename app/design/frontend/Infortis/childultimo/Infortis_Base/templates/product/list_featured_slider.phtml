@@ -1,0 +1,328 @@
+<?php
+/**
+ * Featured Products Slider 
+ */
+?>
+<?php 
+    $_productCollection = $this->getLoadedProductCollection(); 
+?>
+<?php if ($_productCollection && ($_collectionSize = $this->getCollectionCount())): ?> 
+<?php
+    $_helper = $this->getCatalogHelperOutput();
+    $theme = $this->getDataHelper();
+    $helpLabels = $this->getLabelHelper();
+    $helperImg = $this->getImageHelper();
+    $helperAddToLinks = $this->helper('Infortis\Base\Helper\AddToLinks');
+
+    $showCart = ($this->getHideButton()) ? false : true;
+    $imageTypeId = 'category_page_grid';
+    $showAltImage = $theme->getCfg('category/alt_image');
+    
+    $sliderClasses = '';
+    $gridClasses = '';
+    $hash = $this->getFrontendHash();
+    $sliderId = "itemslider-featured-{$hash}";
+
+    //
+    // Slider configuration
+    // ----------------------------------------------
+
+    // Single item
+    if ($_collectionSize == 1)
+    {
+        $sliderClasses .= ' single-item';
+    }
+
+    // Breakpoints
+    $breakpoints = $this->getBreakpoints();
+    if ($breakpoints === NULL)
+    {
+        $breakpoints = '[0, 1], [320, 2], [480, 3], [768, 4], [992, 5], [1200, 6]';
+    }
+
+    // Responsive mode on/off and number of items
+    $isResponsive = $this->getIsResponsive();
+    if ($isResponsive === NULL)
+    {
+        $isResponsive = true;
+    }
+
+    if (!$isResponsive)
+    {
+        $showItems = $this->getShowItems();
+        if (!$showItems)
+        {
+            $showItems = 5;
+        }
+    }
+
+    // Timeout (automatic scrolling)
+    $timeout = $this->getTimeout();
+    if ($timeout === NULL)
+    {
+        $timeout = intval($theme->getCfg('product_slider/timeout'));
+    }
+    else
+    {
+        $timeout = intval($timeout);
+    }
+
+    // Number of items that should move on scroll
+    $move = $this->getMove();
+    if ($move === NULL)
+    {
+        $move = 0;
+    }
+    else
+    {
+        $move = intval($move);
+    }
+
+    // Loop
+    $loop = $this->getLoop();
+    if ($loop === NULL)
+    {
+        $loop = $theme->getCfg('product_slider/loop');
+    }
+
+    // Speed (arrows / touch swipe)
+    $speed = intval($theme->getCfg('product_slider/speed'));
+
+    // Speed (automatic scrolling / pagination)
+    $autoSpeed = intval($theme->getCfg('product_slider/auto_speed'));
+
+    // Pause on mouse hover
+    $pause = $theme->getCfg('product_slider/pause');
+
+    // Lazy loading
+    $lazy = $theme->getCfg('product_slider/lazy');
+
+    // Pagination
+    $pagination = $this->getPagination();
+
+    //
+    // Grid configuration
+    // ----------------------------------------------
+
+    // Image proportions and size
+    $keepAspectRatio = $this->getData('keep_aspect_ratio');
+    if ($keepAspectRatio === NULL)
+    {
+        $keepAspectRatio = $theme->getCfg('product_slider/keep_aspect_ratio');
+    }
+
+    // Image width
+    $imgWidth = $this->getData('img_width'); //getImgWidth();
+    if ($imgWidth === NULL)
+    {
+        $imgWidth = 186;
+    }
+    else
+    {
+        $imgWidth = intval($imgWidth);
+    }
+
+    // If keep aspect ratio, delete height
+    if ($keepAspectRatio)
+    {
+        $imgHeight = 0;
+    }
+    else
+    {
+        $imgHeight = $imgWidth;
+    }
+
+    // If height parameter exists, it overrides current value of height
+    if ($this->getData('img_height') !== NULL)
+    {
+        $imgHeight = intval($this->getData('img_height'));
+    }
+
+    // Size of item's elements
+    $size = $this->getSize();
+    if ($size)
+    {
+        $gridClasses = ' ' . $size;
+    }
+    else
+    {
+        if (isset($showItems))
+        {
+            if ($showItems >= 8)
+            {
+                $gridClasses = ' size-xs';
+            }
+            elseif ($showItems >= 6)
+            {
+                $gridClasses = ' size-s';
+            }
+        }
+    }
+
+    // Align elements to the center
+    if ($this->getCentered())
+    {
+        $gridClasses.= ' centered';
+    }
+
+    // // Equal height of items
+    // if ($this->getEqualHeight())
+    // {
+    //     $gridClasses.= ' equal-height';
+    // }
+
+?>
+<div class="block itemslider<?php if($sliderClasses) echo $sliderClasses; ?> slider-arrows1 slider-arrows1-pos-top-right slider-pagination1">
+    <div class="block-title"><strong><?php echo $this->getBlockName(); ?></strong></div>
+    <div class="block-content">
+        <div class="products-grid<?php if($gridClasses) echo $gridClasses; ?>">
+            <div id="<?php echo $sliderId; ?>" class="products list items product-items">
+                <?php foreach ($_productCollection as $_product): ?>
+                <div class="item">
+                    <div class="product-item-info">
+                        <div class="product-item-img" <?php /*style="max-width:<?php echo $imgWidth; ?>px;" */?> >
+
+                            <a href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl() ?>" title="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true); ?>" class="product-image">
+                                <?php if ($lazy): ?>
+                                    <img class="lazyOwl" data-src="<?php echo $helperImg->getImg($_product, $imageTypeId, $imgWidth, $imgHeight); ?>" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true); ?>" />
+                                <?php else: ?>
+                                    <img src="<?php echo $helperImg->getImg($_product, $imageTypeId, $imgWidth, $imgHeight); ?>" alt="<?php echo $this->stripTags($this->getImageLabel($_product, 'small_image'), null, true); ?>" />
+                                <?php endif; ?>
+                            </a>
+
+                            <?php //Product alternative image ?>
+                            <?php if ($showAltImage): ?>
+                                <?php echo $theme->getAltImgHtml($_product, $imageTypeId, $imgWidth, $imgHeight); ?>
+                            <?php endif; ?>
+
+                            <?php //Product labels ?>
+                            <?php echo $helpLabels->getLabels($_product); ?>
+
+                            <?php //Add-to links
+                                $addtoLinksClasses = '';
+                                if ($theme->getCfg('category_grid/display_addtolinks') != 0 && $theme->getCfg('category_grid/addtolinks_simple')) 
+                                {
+                                    $addtoLinksClasses = ' addto-links addto-links-icons addto-onimage'; //Always display
+                                    if ($theme->getCfg('category_grid/display_addtolinks') == 2)
+                                        $addtoLinksClasses .= ' visible-onhover'; //Display only on hover
+                                }
+                            ?>
+                            <?php if ($addtoLinksClasses): ?>
+                                <?php if ($linksHtml = $helperAddToLinks->getLinksIcons($_product)): ?>
+                                    <div data-role="add-to-links" class="actions-secondary<?php echo $addtoLinksClasses; ?>"><?php echo $linksHtml; ?></div>
+                                <?php endif; ?>
+                            <?php endif; ?>
+
+                        </div> <!-- end: product-item-img -->
+                        <div class="product details product-item-details">
+                            <?php
+                                $_productNameStripped = $block->stripTags($_product->getName(), null, true);
+                            ?>
+                            <strong class="product name product-item-name">
+                                <a class="product-item-link" href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl(); ?>" title="<?php echo $_productNameStripped; ?>">
+                                    <?php /* @escapeNotVerified */ echo $_helper->productAttribute($_product, $_product->getName(), 'name'); ?>
+                                </a>
+                            </strong>
+
+                            <?php if($_product->getRatingSummary()): ?>
+                                <?php echo $this->getReviewsSummaryHtml($_product, 'short') ?>
+                            <?php endif; ?>
+
+                            <?php echo $this->getProductPrice($_product) ?>
+
+                            <div class="product actions product-item-actions">
+
+                                <?php if ($showCart): ?>
+                                        <div class="actions-primary">
+                                            <?php if ($_product->isSaleable()): ?> <?php //if (!$_product->canConfigure() && $_product->isSaleable()): ?>
+                                                <?php $postParams = $block->getAddToCartPostParams($_product); ?>
+                                                <form data-role="tocart-form" action="<?php /* @escapeNotVerified */ echo $postParams['action']; ?>" method="post">
+                                                    <input type="hidden" name="product" value="<?php /* @escapeNotVerified */ echo $postParams['data']['product']; ?>">
+                                                    <input type="hidden" name="<?php /* @escapeNotVerified */ echo \Magento\Framework\App\Action\Action::PARAM_NAME_URL_ENCODED; ?>" value="<?php /* @escapeNotVerified */ echo $postParams['data'][\Magento\Framework\App\Action\Action::PARAM_NAME_URL_ENCODED]; ?>">
+                                                    <?php echo $block->getBlockHtml('formkey')?>
+                                                    <button type="submit"
+                                                            title="<?php echo $block->escapeHtml(__('Add to Cart')); ?>"
+                                                            class="action tocart primary">
+                                                        <span><?php /* @escapeNotVerified */ echo __('Add to Cart') ?></span>
+                                                    </button>
+                                                </form>
+                                            <?php else: ?>
+                                                <?php if ($_product->getIsSalable()): ?>
+                                                    <div class="stock available"><span><?php /* @escapeNotVerified */ echo __('In stock') ?></span></div>
+                                                <?php else: ?>
+                                                    <div class="stock unavailable"><span><?php /* @escapeNotVerified */ echo __('Out of stock') ?></span></div>
+                                                <?php endif; ?>
+                                            <?php endif; ?>
+
+                                            <?php /*
+                                                <button class="action tocart primary see-details" data-mage-init='{"redirectUrl": {"url": "<?php echo $_product->getProductUrl(); ?>"}}' type="button" title="<?php echo __('View Details'); ?>">
+                                                    <span><?php echo __('View Details'); ?></span>
+                                                </button>
+                                            */ ?>
+                                        </div>
+                                <?php endif; ?>
+
+                            </div> <!-- end: product-item-actions -->
+                        </div> <!-- end: product-item-details -->
+                    </div> <!-- end: product-item-info -->
+                </div>
+                <?php endforeach; ?>
+            </div> <!-- end: element with the itemslider ID -->
+        </div> <!-- end: products-grid -->    
+    </div> <!-- end: block-content -->
+</div>
+<script type="text/javascript">
+//<![CDATA[
+
+    requirejs(['jquery','owlcarousel'], function(jQuery, owl)
+    {
+        jQuery(function($) {
+            var owl = $('#<?php echo $sliderId; ?>');
+            owl.owlCarousel({
+
+                <?php if ($lazy): ?>
+                    lazyLoad: true,
+                <?php endif; ?> 
+                <?php if(!$isResponsive): ?>
+                    responsive: false,
+                    items: <?php echo $showItems; ?>,
+                <?php else: ?>
+                    itemsCustom: [ <?php echo $breakpoints; ?> ],
+                    responsiveRefreshRate: 50,
+                <?php endif; ?> 
+                <?php if ($speed): ?>
+                    slideSpeed: <?php echo $speed; ?>,
+                <?php endif; ?> 
+                <?php if ($autoSpeed): ?>
+                    paginationSpeed: <?php echo $autoSpeed; ?>,
+                <?php endif; ?> 
+                <?php if ($move !== 1): ?>
+                    scrollPerPage: true,
+                <?php endif; ?> 
+                <?php if ($timeout): ?>
+                    autoPlay: <?php echo $timeout; ?>,
+                <?php endif; ?> 
+                <?php if ($pause): ?>
+                    stopOnHover: true,
+                <?php endif; ?> 
+                <?php if ($loop): ?>
+                    rewindNav: true,
+                    rewindSpeed: 600,
+                <?php else: ?>
+                    rewindNav: false,
+                <?php endif; ?> 
+                <?php if ($pagination): ?>
+                    pagination: true,
+                <?php else: ?>
+                    pagination: false,
+                <?php endif; ?>
+                    navigation: true,
+                    navigationText: false
+
+            });
+        });
+    });
+
+//]]>
+</script>
+<?php endif; ?>

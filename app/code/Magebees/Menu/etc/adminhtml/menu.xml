@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../../Backend/etc/menu.xsd">
+ <menu>
+	<add id="Magebees_Menu::title" title="MageBees" module="Magebees_Menu" sortOrder="30" dependsOnModule="Magebees_Menu" resource="Magebees_Menu::title"/>
+ </menu>
+</config>

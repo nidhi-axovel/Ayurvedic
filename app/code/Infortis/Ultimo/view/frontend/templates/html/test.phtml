@@ -1,0 +1,98 @@
+<?php
+
+ini_set('display_errors', 1); error_reporting(E_ALL);
+
+
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+
+$productCollection = $objectManager->create('Magento\Catalog\Model\ResourceModel\Product\CollectionFactory');
+//var_dump($productCollection);
+
+
+
+/*
+$_reviewFactory = $objectManager->create('Magento\Review\Model\Review');
+var_dump($_reviewFactory);
+$this->_storeManager = $objectManager->create('Magento\Store\Model\StoreManagerInterface');
+$storeId = $this->_storeManager->getStore->getId();
+$_reviewFactory->getEntitySummary($product,$storeId );
+$product->getData();
+var_dump($product->getData() ); */
+
+//print_r($_reviewFactory);
+//echo "jjdfkvj";
+
+$collection = $productCollection->create()->addAttributeToSelect('*')->load();
+
+$_reviewFactory = $objectManager->create('Magento\Review\Model\Review');
+
+
+$listBlock = $objectManager->get('\Magento\Catalog\Block\Product\ListProduct');
+
+
+
+   // $_reviewFactory = $_objectManager->create('Magento\Review\Model\Review');
+    //$_storeId = $_helper->getCurrentStoreId(); //Store ID;
+
+//$summaryData = Mage::getModel('review/review_summary');
+
+foreach ($collection as $product){
+
+
+
+
+    $addToCartUrl =  $listBlock->getAddToCartUrl($product);
+   // var_dump($value);
+
+
+    $valattribute = $product->getData('productweek');
+
+    if($valattribute=="5")
+    {
+        //print_r($product->getData());
+        //var_dump($product->getData());
+        ?>
+
+
+        <div class="product-week-container">
+
+            <div class="main-heading"><h1></h1><?php echo "Product of the Week"; ?></h1></div>
+            <div class="product-week-image">
+                <?php $imgurl = $product->getData('image'); ?>
+                <img src="<?php echo "pub/media/catalog/product".$imgurl; ?>"/>
+            </div>
+            <div class="data-productweek">
+
+                <?php
+                 echo $product->getData('short_description');
+                 echo $product->getData('description');
+                 echo $product->getData('name');
+                 echo "$".$product->getData('price');
+               // echo $_product->getRatingSummary();
+                 ?>
+            </div>
+
+           <!-- <button type="submit" title="<?php //echo $block->escapeHtml(__('Add to Cart')); ?>" class="action tocart primary"> <span><?php //echo __('Add to Cart') ?></span> </button> -->
+
+          <!--  <a href=""><button type="Buy Now" title="Buy Now">Buy Now</button></a> -->
+
+
+         <!--   <button class="button btn-cart" title="Add to Cart" onclick="setLocation('/themysti_market/checkout/cart/add/product/644/qty/1')" type="button"><span><span>Add to Cart</span></span></button> -->
+
+            <form  action="<?php echo $addToCartUrl; ?>" method="post">
+                <?php echo $block->getBlockHtml('formkey')?>
+                <button type="submit" title="Add to Cart" class="actions-primary"><i class="material-icons">Add To Cart</i></button>
+            </form>
+
+
+            
+
+        </div>
+
+
+
+
+<?php
+    }
+}
+?>

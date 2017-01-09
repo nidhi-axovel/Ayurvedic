@@ -1,0 +1,40 @@
+<?php /**
+ *   Wordpress post collection for magento homepage
+ */
+
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    $postInstance = $objectManager->get('FishPig\WordPress\Model\Post');
+    $posts = $postInstance->getCollection()
+            ->addFieldToFilter('post_status','publish')  //only published posts
+            ->addCategoryIdFilter(array(4))  //only published posts
+            ->addFieldToFilter('id',array('nin'=>2))  //for ignoring sample post
+            ->setOrder('post_date', 'DESC')
+            ->setPageSize(3)
+            ->setCurPage(1);
+?>
+<div class="my-story-sidebar">
+  <div class="latest-my-story-post-sidebar">
+      <div id="post-my-stories-sidebar" class="latest-postlist-sidebar">
+      <span class="new-stories-sidebar-heading"><?php echo __('Success Stories'); ?></span>
+      <?php
+        foreach($posts as $i=>$po):?>
+            <div class="item">
+              <a href="<?php echo $po->getUrl()?>">
+                <div class="post-detail-group">
+                  <span class="post-title-list"><?php echo $po->getPostTitle();?></span>
+                </div>
+                <?php if ($image = $po->getImage()) {
+                  $postImage = $image->getFullSizeImage();
+                }else{
+                  $postImage = '';
+                }
+               ?>
+                <div class="post-image"><img src="<?php echo $postImage;?>"/></div>
+              </a>
+            </div>
+        <?php
+        endforeach;
+        ?>
+      </div>
+  </div>
+</div>

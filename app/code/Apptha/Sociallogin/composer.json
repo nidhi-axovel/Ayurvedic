@@ -1,0 +1,17 @@
+{
+ "name": "apptha/sociallogin",
+    "description": "My awesome example extension",
+    "require": {
+        "magento/magento-composer-installer": "*"
+    },
+    "type": "magento2-module",
+    "version": "1.0.0",
+    "extra": {
+        "map": [
+            [
+                "*",
+                "Apptha/sociallogin"
+            ]
+        ]
+    }
+}

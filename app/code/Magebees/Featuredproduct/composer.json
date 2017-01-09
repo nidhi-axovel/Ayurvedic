@@ -1,0 +1,22 @@
+{
+        "name": "magebees/module-featuredproduct",
+        "description": "A module for featuredproduct.",
+        "type": "magento2-module",
+        "version": "1.0.1",
+        "license": [
+            "OSL-3.0",
+            "AFL-3.0"
+        ],
+        "require": {
+            "php": "~5.5.0|~5.6.0",
+            "magento/magento-composer-installer": "*"
+        },
+        "extra": {
+            "map": [
+                [
+                    "*",
+                    "Magebees/Featuredproduct"
+                ]
+            ]
+        }
+    }

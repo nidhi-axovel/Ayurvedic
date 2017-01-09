@@ -1,0 +1,39 @@
+<?php /**
+ *   Wordpress post collection for magento homepage
+ */
+
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    $postInstance = $objectManager->get('FishPig\WordPress\Model\Post');
+    $posts = $postInstance->getCollection()
+            ->addFieldToFilter('post_status','publish')  //only published posts
+            ->addFieldToFilter('id',array('nin'=>2))  //for ignoring sample post
+            ->setPageSize(3)
+            ->setCurPage(1);
+
+?>
+<div class="latest-post">
+    <span class="blog-title"><?php echo __('Get Inspired')?></span>
+    <ul class="latest-postlist">
+    <?php
+      foreach($posts as $i=>$po):?>
+          <li>
+            <a href="<?php echo $po->getUrl()?>">
+              <div class="post-detail-group">
+                <span class="article-sign"><?php echo __('Article');?></span>
+                <span class="post-title-list"><?php echo $po->getPostTitle();?></span>
+                <span class="post-desc"><?php echo $po->getPostContent();?></span>
+              </div>
+              <?php if ($image = $po->getImage()) {
+                $postImage = $image->getAvailableImage();
+              }
+              else{
+                $postImage = 'http://pbs.twimg.com/media/Cq8QeyHVMAA7PHC.jpg';
+              }?>
+              <div class="post-image"><img src="<?php echo $postImage;?>"/></div>
+            </a>
+          </li>
+      <?php
+      endforeach;
+      ?>
+    </ul>
+</div>

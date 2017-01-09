@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+ <menu>
+	<add id="Magebees_Featuredproduct::Heading" title="Featured Products" module="Magebees_Featuredproduct" sortOrder="50" parent="Magebees_Menu::title" resource="Magebees_Featuredproduct::Heading" />
+	
+	<add id="Magebees_Featuredproduct::config" title="Featuredproduct Configuration"  action="adminhtml/system_config/edit/section/featuredproduct" module="Magebees_Featuredproduct" sortOrder="2" parent="Magebees_Featuredproduct::Heading"  resource="Magebees_Featuredproduct::config"/>
+	
+	<add id="Magebees_Featuredproduct::grid" title="Manage Product Manually"  action="featuredproduct/manage" module="Magebees_Featuredproduct" sortOrder="1" parent="Magebees_Featuredproduct::Heading" resource="Magebees_Featuredproduct::featuredproduct"/>
+	
+ </menu>
+</config>
+

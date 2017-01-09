@@ -1,0 +1,78 @@
+<?php /**
+ *   Wordpress post collection for magento homepage
+ */
+
+    $objectManager = \Magento\Framework\App\ObjectManager::getInstance();
+    $postInstance = $objectManager->get('FishPig\WordPress\Model\Post');
+    $posts = $postInstance->getCollection()
+            ->addFieldToFilter('post_status','publish')  //only published posts
+            ->addCategoryIdFilter(array(2))  //only published posts
+            ->addFieldToFilter('id',array('nin'=>2));  //for ignoring sample post
+            /*->setPageSize(3)
+            ->setCurPage(1);*/
+
+?>
+  <div class="latest-post">
+      <h1><?php echo __('Special Promotions')?></h1>
+      <span class="blog-title"><?php echo __('Check Out Our Special Deals')?></span>
+      <div id="owl" class="latest-postlist">
+      <?php
+        foreach($posts as $i=>$po):?>
+            <div class="item">
+              <a href="<?php echo $po->getUrl()?>">
+                <div class="post-detail-group">
+                  <span class="article-sign"><?php echo __('Special Introductory Price');?></span>
+                  <span class="post-title-list"><?php echo $po->getPostTitle();?></span>
+                </div>
+                <?php if ($image = $po->getImage()) {
+                  $postImage = $image->getFullSizeImage();
+                }else{
+                  $postImage = '';
+                }
+               ?>
+                <div class="post-image"><img src="<?php echo $postImage;?>"/></div>
+              </a>
+            </div>
+        <?php
+        endforeach;
+        ?>
+      </div>
+      <div class="customNavigation">
+        <a class="btn prev"><i class="fa fa-chevron-left" aria-hidden="true"></i></a>
+        <a class="btn next"><i class="fa fa-chevron-right" aria-hidden="true"></i></a>
+      </div>
+  </div>
+
+<style type="text/css">
+    .prev , .next {
+        cursor: pointer;
+    }
+    .owl-item .item {
+        width : 100%;
+    }
+</style>
+<script type="text/javascript">
+    require(['jquery', 'owl'], function($){
+    $(document).ready(function() {
+          var owl = $("#owl");
+          owl.owlCarousel({
+              items : 3, //10 items above 1000px browser width
+              itemsDesktop : [1000,4], //5 items between 1000px and 901px
+              itemsDesktopSmall : [900,3], // betweem 900px and 601px
+              itemsTablet: [600,2], //2 items between 600 and 0
+              itemsMobile : [400,1]//true // itemsMobile disabled - inherit from itemsTablet option
+          });
+         
+          // Custom Navigation Events
+          $(".next").click(function(){
+            owl.trigger('owl.next');
+          })
+          $(".prev").click(function(){
+            owl.trigger('owl.prev');
+          })
+     
+    });
+
+
+    });
+</script>

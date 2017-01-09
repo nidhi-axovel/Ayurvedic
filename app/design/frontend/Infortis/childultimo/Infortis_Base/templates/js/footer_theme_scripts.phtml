@@ -1,0 +1,421 @@
+<?php
+/**
+ * Additional scripts
+ */
+?>
+<?php
+    $theme = $this->helper('Infortis\Base\Helper\Data');
+    $gc = $theme->getCfgGroup('category_grid');
+?>
+<script type="text/javascript">
+//<![CDATA[
+
+requirejs(['jquery'], function(jQuery) {
+
+
+
+    //console.log('requirejs footer_theme_scripts'); ///
+
+    <?php //Products grid: set equal height for grid items ?>
+    <?php if ($gc['equal_height']): ?>
+
+        var gridItemsEqualHeightApplied = false;
+        function setGridItemsEqualHeight()
+        {
+            var $list = jQuery('.category-products-grid > ol');
+            var $listItems = $list.children();
+
+            var centered = $list.hasClass('centered');
+            var gridItemMaxHeight = 0;
+            $listItems.each(function() {
+
+                var $item = jQuery(this);
+                $item.css("height", "auto"); <?php //Reset height ?>
+                var $actionsBlock = $item.find('.actions');
+
+                <?php //Align button center ?>
+                if (centered)
+                {
+                    var objectWidth = $actionsBlock.width();
+                    var availableWidth = $item.width();
+                    var space = availableWidth - objectWidth;
+                    var leftOffset = space / 2;
+                    $actionsBlock.css("padding-left", leftOffset + "px"); <?php //Set left offset of the button ?>
+
+                    //console.log('objectWidth ='+ objectWidth +', availableWidth ='+ availableWidth +', space ='+ space +', leftOffset ='+ leftOffset ); ///
+
+                }
+
+                // Calculate top padding of the item and use it as bottom offset for the button.
+                // Important: don't take bottom padding because it can be modified by the script (so it can be very large value)
+                // in second (and another) iteration.
+                var bottomOffset = parseInt($item.css("padding-top"));
+                // if (centered)
+                // {
+                //     bottomOffset += 10;
+                // }
+                $actionsBlock.css("bottom", bottomOffset + "px");
+                //console.log('bottomOffset ='+ bottomOffset ); ///
+
+                <?php //If "action" container is visible ?>
+                // if ($actionsBlock.is(":visible"))
+                // {
+                //     //Set new bottom padding: height of the object + bottom offset
+                //     var objectHeight = $actionsBlock.innerHeight()
+                //     $item.css("padding-bottom", (objectHeight + bottomOffset) + "px");
+                // }
+
+                gridItemMaxHeight = Math.max(gridItemMaxHeight, $item.height());
+            });
+
+            //console.log('apply to all: gridItemMaxHeight = '+ gridItemMaxHeight ); ///
+
+            //Apply max height
+            $listItems.css("height", gridItemMaxHeight + "px");
+            gridItemsEqualHeightApplied = true;
+
+        }
+
+    <?php endif; //end: equal_height ?>
+
+
+
+    jQuery(function($) {
+
+        setGridItemsEqualHeight();
+
+        <?php //Products grid: item hover effect ?>
+        <?php if ($gc['hover_effect']): ?>
+
+            var startHeight; //TODO: make sure this var can be safely shared between both events
+            $('.category-products-grid').on('mouseenter', '.item', function() {
+
+                    var $item = $(this);
+
+                <?php if ($gc['disable_hover_effect']): //If hover effect disabled for vieport width below specified value ?>
+                    <?php //Start: viewport width condition ?>
+                    if ($(window).width() >= <?php echo $gc['disable_hover_effect']; ?>)
+                    {
+                <?php endif; ?>
+
+                    <?php if ($gc['equal_height']): ?>
+                        if (gridItemsEqualHeightApplied === false)
+                        {
+                            //console.log('on(mouseenter) gridItemsEqualHeightApplied === false'); ///
+                            return false;
+                        }
+                    <?php endif; ?>
+
+                    startHeight = $item.height();
+                    $item.css("height", "auto"); //Release height
+                    $item.find(".display-onhover").fadeIn(400, "easeOutCubic"); //Show elements visible on hover
+                    var h2 = $item.height();
+                    
+                    <?php //Compare start height with on-hover height, calculate the difference ?>
+                    ////////////////////////////////////////////////////////////////
+                    //var addtolinksHeight = 0;
+                    var addtocartHeight = 0;
+                    var $actionsBlock = $item.find('.actions');
+                    
+                    <?php if ($gc['display_addtocart'] == 2): //if displayed on hover ?>
+                        addtocartHeight = $actionsBlock.innerHeight()
+                    <?php endif; ?>
+                    
+                    <?php /* if ($gc['display_addtolinks'] == 2): //if displayed on hover (but when is NOT on image) ?>
+                        var addtolinksEl = $item.find('.addto-links');
+                        if (addtolinksEl.hasClass('addto-onimage') == false)
+                            addtolinksHeight = addtolinksEl.innerHeight();
+                    <?php endif; */ ?>
+
+                    var diff = 0;
+                    if (h2 < startHeight)
+                    {
+                        $item.height(startHeight);
+                    }
+                    else
+                    {
+                        $item.height(h2);
+                        diff = h2 - startHeight;
+                    }
+                    //console.log('startHeight ='+ startHeight +', h2 ='+ h2 +', diff ='+ diff ); ///
+                    
+                    <?php if ($gc['equal_height'] && $gc['display_addtocart'] == 2): ?>
+                        // var h3 = h2 + addtocartHeight;
+                        // var diff = 0;
+                        // if (h3 < startHeight)
+                        // {
+                        //     $item.height(startHeight);
+                        // }
+                        // else
+                        // {
+                        //     $item.height(h3); <?php //Apply height explicitly ?>
+                        //     diff = h3 - startHeight;
+                        // }
+                        // console.log('button:onHover| startHeight ='+ startHeight +', h2 ='+ h2 +', h3 ='+ h3 +', diff ='+ diff ); ///
+                    <?php else: ?>
+                        // var diff = 0;
+                        // if (h2 < startHeight)
+                        // {
+                        //     $item.height(startHeight);
+                        // }
+                        // else
+                        // {
+                        //     $item.height(h2);
+                        //     diff = h2 - startHeight;
+                        // }
+                        // console.log('startHeight ='+ startHeight +', h2 ='+ h2 +', diff ='+ diff ); ///
+                    <?php endif; ?>
+                    ////////////////////////////////////////////////////////////////
+
+                    $item.css("margin-bottom", "-" + diff + "px"); <?php //Apply difference as nagative margin ?>
+
+                <?php if ($gc['disable_hover_effect']): //If hover effect disabled for vieport width below specified value ?>
+                    } <?php //end: viewport width condition ?>
+                <?php endif; ?>
+                
+            }).on('mouseleave', '.item', function() {
+
+                    var $item = $(this);
+
+                <?php if ($gc['disable_hover_effect']): //If hover effect disabled for vieport width below specified value ?>
+                <?php //Start: viewport width condition ?>
+                    if ($(window).width() >= <?php echo $gc['disable_hover_effect']; ?>)
+                    {
+                <?php endif; ?>
+
+                    //Clean up
+                    $item.find(".display-onhover").stop(true).hide();
+                    $item.css("margin-bottom", "");
+
+                    //console.log('mouseleave, startHeight ='+ startHeight ); ///
+
+                    <?php //Return the default height. If "Egual Height" disabled, unset item's height. ?>
+                    <?php if ($gc['equal_height']): ?>
+                        $item.height(startHeight);
+                    <?php else: ?>
+                        $item.css("height", "");
+                    <?php endif; ?>
+
+                <?php if ($gc['disable_hover_effect']): //If hover effect disabled for vieport width below specified value ?>
+                    } <?php //end: viewport width condition ?>
+                <?php endif; ?>
+                
+            });
+        
+        <?php else: //hover effect NOT enabled ?>
+        
+            <?php //Display elements visible on hover ?>
+            $('.category-products-grid').on('mouseenter', '.item', function() {
+                $(this).find(".display-onhover").fadeIn(400, "easeOutCubic");
+            }).on('mouseleave', '.item', function() {
+                $(this).find(".display-onhover").stop(true).hide();
+            });
+        
+        <?php endif; ?>
+
+
+
+        <?php //Display product alternative image ?>
+        $('.products-grid, .products-list').on('mouseenter', '.product-item-img', function() {
+            $(this).find(".alt-img").fadeIn(400, "easeOutCubic");
+        }).on('mouseleave', '.product-item-img', function() {
+            $(this).find(".alt-img").stop(true).fadeOut(400, "easeOutCubic");
+        });
+
+
+
+        <?php //Fade on hover ?>
+        $('.fade-on-hover').on('mouseenter', function() {
+            $(this).animate({opacity: 0.75}, 300, 'easeInOutCubic');
+        }).on('mouseleave', function() {
+            $(this).stop(true).animate({opacity: 1}, 300, 'easeInOutCubic');
+        });
+
+
+
+        <?php //Drop-down ?>
+        var ddBlockSelector = '.dropdown-block';
+        var ddOpenTimeout;
+        var dMenuPosTimeout;
+        var DD_DELAY_IN = 200;
+        var DD_DELAY_OUT = 0;
+        var DD_ANIMATION_IN = 0;
+        var DD_ANIMATION_OUT = 0;
+
+        // $('.clickable-dropdown > .dropdown-heading').click(function() {
+        //     $(this).parent().addClass('open');
+        //     $(this).parent().trigger('mouseenter');
+        // });
+
+        //$('.dropdown-heading').on('click', function(e) {
+        $(document).on('click', '.dropdown-heading', function(e) {
+            e.preventDefault();
+        });
+
+        $(document).on('mouseenter', ddBlockSelector, function() {
+            
+            var ddToggle = $(this).children('.dropdown-heading');
+            var ddMenu = $(this).children('.dropdown-content');
+            var ddWrapper = ddMenu.parent(); <?php //$(this); ?>
+            
+            <?php //Clear old position of dd menu ?>
+            ddMenu.css("left", "");
+            ddMenu.css("right", "");
+            
+            <?php //Show dd menu ?>
+            if ($(this).hasClass('clickable-dropdown'))
+            {
+                <?php //If dropdown is opened (parent already has class 'open') ?>
+                if ($(this).hasClass('open'))
+                {
+                    $(this).children('.dropdown-content').stop(true, true).delay(DD_DELAY_IN).fadeIn(DD_ANIMATION_IN, "easeOutCubic");
+                }
+            }
+            else
+            {
+                <?php //Add class 'open' to dd ?>
+                clearTimeout(ddOpenTimeout);
+                ddOpenTimeout = setTimeout(function() {
+                    
+                    ddWrapper.addClass('open');
+                    
+                }, DD_DELAY_IN);
+                
+                //$(this).addClass('open');
+                $(this).children('.dropdown-content').stop(true, true).delay(DD_DELAY_IN).fadeIn(DD_ANIMATION_IN, "easeOutCubic");
+            }
+            
+            <?php //Set new position of dd menu.
+                  //This code is delayed the same amount of time as drop-down animation. ?>
+            clearTimeout(dMenuPosTimeout);
+            dMenuPosTimeout = setTimeout(function() {
+
+                if (ddMenu.offset().left < 0)
+                {
+                    var space = ddWrapper.offset().left; <?php //Space available on the left of dd ?>
+                    ddMenu.css("left", (-1)*space);
+                    ddMenu.css("right", "auto");
+                }
+            
+            }, DD_DELAY_IN);
+
+        }).on('mouseleave', ddBlockSelector, function() {
+            
+            var ddMenu = $(this).children('.dropdown-content');
+            clearTimeout(ddOpenTimeout); <?php //Clear, to close dd on mouseleave ?>
+            ddMenu.stop(true, true).delay(DD_DELAY_OUT).fadeOut(DD_ANIMATION_OUT, "easeInCubic");
+            if (ddMenu.is(":hidden"))
+            {
+                ddMenu.hide();
+            }
+            $(this).removeClass('open');
+        });
+        
+        
+        
+        <?php //Back to top ?>
+        var windowScroll_t;
+        $(window).scroll(function(){
+            
+            clearTimeout(windowScroll_t);
+            windowScroll_t = setTimeout(function() {
+                                        
+                if ($(this).scrollTop() > 100)
+                {
+                    $('#scroll-to-top').fadeIn();
+                }
+                else
+                {
+                    $('#scroll-to-top').fadeOut();
+                }
+            
+            }, 500);
+            
+        });
+        
+        $('#scroll-to-top').click(function(){
+            $("html, body").animate({scrollTop: 0}, 600, "easeOutCubic");
+            return false;
+        });
+
+
+
+        <?php //Event: deferred resize ?>
+        var dResize = {
+
+            winWidth : 0
+            , winHeight : 0
+            , windowResizeTimeout : null
+
+            , init : function()
+            {
+                dResize.winWidth = $(window).width();
+                dResize.winHeight = $(window).height();
+                dResize.windowResizeTimeout;
+
+                $(window).on('resize', function(e) {
+                    clearTimeout(dResize.windowResizeTimeout);
+                    dResize.windowResizeTimeout = setTimeout(function() {
+                        dResize.onEventResize(e);
+                    }, 50);
+                });
+            }
+
+            , onEventResize : function(e)
+            {
+                //Prevent from executing the code in IE when the window wasn't actually resized
+                var winNewWidth = $(window).width();
+                var winNewHeight = $(window).height();
+
+                //Code in this condition will be executed only if window was actually resized
+                if (dResize.winWidth != winNewWidth || dResize.winHeight != winNewHeight)
+                {
+                    //Trigger deferred resize event
+                    $(window).trigger("themeResize", e);
+
+                    //Additional code executed on deferred resize
+                    dResize.onEventDeferredResize();
+                }
+
+                //Update window size variables
+                dResize.winWidth = winNewWidth;
+                dResize.winHeight = winNewHeight;
+            }
+
+            , onEventDeferredResize : function() //Additional code, execute after window was actually resized
+            {
+
+                //Products grid: equal height of items
+                <?php if ($gc['equal_height']): ?>
+                    setGridItemsEqualHeight();
+                <?php endif; ?>
+
+            }
+
+        }; //end: dResize
+
+        dResize.init();
+
+
+
+    }); //end: on document ready
+    
+    
+
+
+    jQuery(window).on('load',function() {
+    //jQuery(document).ready(function() {
+
+        <?php //Products grid: equal height of items ?>
+        <?php if ($gc['equal_height']): ?>
+            setGridItemsEqualHeight();
+        <?php endif; ?>
+
+    }); //end: on load
+
+
+
+}); //end: requirejs
+
+//]]>
+</script>

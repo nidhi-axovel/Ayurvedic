@@ -1,0 +1,405 @@
+<?php
+/**
+ * Apptha
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the EULA
+ * that is bundled with this package in the file LICENSE.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://www.apptha.com/LICENSE.txt
+ *
+ * ==============================================================
+ *                 MAGENTO EDITION USAGE NOTICE
+ * ==============================================================
+ * This package designed for Magento COMMUNITY edition
+ * Apptha does not guarantee correct work of this extension
+ * on any other Magento edition except Magento COMMUNITY edition.
+ * Apptha does not provide extension support in case of
+ * incorrect edition usage.
+ * ==============================================================
+ *
+ * @category    Apptha
+ * @package     Apptha_Sociallogin
+ * @version     1.0
+ * @author      Apptha Team <developers@contus.in>
+ * @copyright   Copyright (c) 2016 Apptha. (http://www.apptha.com)
+ * @license     http://www.apptha.com/LICENSE.txt
+ *
+ */
+$appId = $this->helper ( 'Apptha\Sociallogin\Helper\Data' )->getConfig ( 'sociallogin/facebooklogin/appid' );
+$fbloginEnabled = $this->helper ( 'Apptha\Sociallogin\Helper\Data' )->getConfig ( 'sociallogin/facebooklogin/fbloginenabled' );
+$twitterloginEnabled = $this->helper ( 'Apptha\Sociallogin\Helper\Data' )->getConfig ( 'sociallogin/twitterlogin/twitterloginenabled' );
+$googleloginEnabled = $this->helper ( 'Apptha\Sociallogin\Helper\Data' )->getConfig ( 'sociallogin/googlelogin/googleloginenabled' );
+$enableSociallogin = $this->helper ( 'Apptha\Sociallogin\Helper\Data' )->getConfig ( 'sociallogin/sociallogin/enabled' );
+$captchaEnable = $this->helper ( 'Apptha\Sociallogin\Helper\Data' )->getConfig ( 'customer/captcha/enable' );
+?>
+<?php
+$objectManager = \Magento\Framework\App\ObjectManager::getInstance ();
+$customerSession = $objectManager->get ( 'Magento\Customer\Model\Session' );
+if ($enableSociallogin == 1 && ! $customerSession->isLoggedIn ()) {
+    ?>
+<script src="<?php echo $block->getViewFileUrl('Apptha_Sociallogin::js/sociallogin.js'); ?>"></script>
+<div id="header_logo_Div" ng-app="sociallogin"
+	ng-controller="signInvalidateCtrl" style="display: none">
+	
+	
+	<a class="closeLink" onclick="apptha_socialloginclose()"
+		ng-click="reset()"></a>
+	<div class="left_login"><?php /* Login Block */ ?>
+	<?php 
+	$objectManager = \Magento\Framework\App\ObjectManager::getInstance ();
+	$helper = $objectManager->get ( 'Apptha\Marketplace\Helper\System' );
+	$domain=$helper->checkMarketplaceKey();
+	if($domain!=1){
+	 echo  $keyerror =  $helper->getLicensekeyMessage();
+	}
+	?>
+<div id="login-block">
+			<form class="signin-form"
+				action="<?php  echo $block->getLoginFormAction()?>" method="post"
+				name="myForm" id="form-validate" novalidate
+				ng-submit="myForm.$valid">
+				<h1><?php echo __('Login Form')?></h1>
+				<fieldset class="fieldset"
+					data-hasrequired="<?php  echo __('* Required Fields') ?>">
+					<div class="field title required">
+						<label for="title" class="label"><span><?php  echo __('Email id') ?></span></label>
+						<div class="control">
+							<input type="email" name="email" ng-model="email" alt="email"
+								id="email" required> <span style="color: red"
+								ng-show="myForm.email.$dirty && myForm.email.$invalid"> <span
+								ng-show="myForm.email.$error.required"><?php echo __('Email is required.');?></span>
+								<span ng-show="myForm.email.$error.email"><?php __('Invalid email address.');?></span>
+						
+						</div>
+					</div>
+				</fieldset>
+				<fieldset class="fieldset"
+					data-hasrequired="<?php echo __('* Required Fields') ?>">
+					<div class="field summary required">
+						<label for="summary" class="label"><span><?php  echo __('Password') ?></span></label>
+						<div class="control">
+							<input type="password" ng-model="password" name="password"
+								alt="password" id="password" class="input-text" required> <span
+								style="color: red" ng-show="myForm.password.$dirty"> <span
+								ng-show="myForm.password.$error.required"><?php echo __('Password is required')?></span>
+						
+						</div>
+					</div>
+					<input type="hidden" name="isseller" id="isseller" />
+				</fieldset>
+				<span id="progress_image_login" style="display: none"> <img
+					src="<?php echo $block->getViewFileUrl('Apptha_Sociallogin/css/images/ajax-loader.gif'); ?>"
+					alt="loading please wait">
+				</span>
+				<div id="formSuccess"></div>
+				<div class="actions-toolbar">
+
+					<a href="javascript:void(0);" onclick="show_hide_socialforms('3');"
+						id="show_password"><?php echo __('Forgot Your Password'); ?>?</a>
+					<span id="progress_image_login" style="display: none"> <img
+						src="<?php echo $block->getViewFileUrl('Apptha_Sociallogin/css/images/ajax-loader.gif'); ?>"
+						alt="loading please wait" />
+					</span>
+					<div class="primary">
+						<button type="button" id="login-button"
+							onclick="doSociallogin(this.form.action,this.form,'formSuccess','progress_image_login')"
+							ng-disabled="myForm.$invalid" class="action submit primary">
+							<span><?php  echo __('Login') ?></span>
+						</button>
+					</div>
+				</div>
+			</form>
+			<div class="new_account_create"><?php echo __("Don't have an account?"); ?>
+
+                            <a href="javascript:void(0);"
+					onclick="show_hide_socialforms('2');"><?php echo __('Create One!'); ?></a>
+			</div>
+			<div class="sl_clear"></div>
+			<div id="forget_password_div" style="display: none">
+				<form id="forget_password_form" name="forgotpassword"
+					action="<?php echo $block->getForgotpasswordAction() ?>"
+					class="socialpopup_form" novalidate
+					ng-submit="forgotpassword.$valid">
+					<h4><?php echo __('Forgot Your Password'); ?>?</h4>
+					<label for="forget_password" class="required"><?php echo __('Enter Your Email'); ?>
+                                    <em style="color: red">*</em></label>
+					<div class="socialpopup-input-box">
+						<input type="email" value="" name="email" id="email" required /> <input
+							type="text" name="extraforgetelement" style="display: none;" />
+						<div class="social_login_btn f-right">
+							<div id="progress_image_forgot" style="display: none;">
+								<img
+									src="<?php echo $block->getViewFileUrl('Apptha_Sociallogin/css/images/ajax-loader.gif');  ?>"
+									alt="loading please wait" />
+							</div>
+							<div id="forget_password_error" style="color: red"></div>
+							<button type="button"
+								onclick="doSociallogin(this.form.action,this.form,'forget_password_error','progress_image_forgot')"
+								id="sforget" ng-disabled="forgotpassword.$invalid"
+								class="action submit primary">
+								<span><span><?php echo __('Submit'); ?></span></span>
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<form class="form-create-account" style="display: none;"
+			action="<?php  echo $block->getSignUpFormAction()?>" method="post"
+			id="signup-form-validate" enctype="multipart/form-data"
+			data-mage-init='{"validation":{}}' autocomplete="off">
+			<h1><?php echo __('Signup Form')?></h1>
+			<fieldset class="fieldset create info">
+				<legend class="legend">
+					<span><?php echo __('Personal Information'); ?></span>
+				</legend>
+				<br>
+				<div class="field field-name-firstname required">
+					<label class="label" for="firstname"> <span><?php echo __('First Name'); ?></span>
+					</label>
+					<div class="control">
+						<input type="text" id="firstname" name="firstname" value=""
+							title="First Name" class="input-text required-entry"
+							data-validate="{required:true}">
+					</div>
+				</div>
+				<div class="field field-name-lastname required">
+					<label class="label" for="lastname"> <span><?php echo __('Last Name'); ?></span>
+					</label>
+
+					<div class="control">
+						<input type="text" id="lastname" name="lastname" value=""
+							title="Last Name" class="input-text required-entry"
+							data-validate="{required:true}">
+					</div>
+				</div>
+				<div class="field required">
+					<label for="email_address" class="label"><span><?php echo __('Email'); ?></span></label>
+					<div class="control">
+						<input type="email" name="email" id="email_address" value=""
+							title="Email" class="input-text"
+							data-validate="{required:true, 'validate-email':true}">
+					</div>
+				</div>
+				<div class="field password required">
+					<label for="password" class="label"><span><?php echo __('Password'); ?></span></label>
+					<div class="control">
+						<input type="password" name="password" id="password"
+							title="Password" class="input-text"
+							data-validate="{required:true, 'validate-password':true}"
+							autocomplete="off">
+					</div>
+				</div>
+				<div class="field confirmation required">
+					<label for="password-confirmation" class="label"><span><?php echo __('Confirm Password'); ?></span></label>
+					<div class="control">
+						<input type="password" name="password_confirmation"
+							title="Confirm Password" id="password-confirmation"
+							class="input-text"
+							data-validate="{required:true, equalTo:'#password'}"
+							autocomplete="off">
+					</div>
+				</div>
+				<input type="hidden" name="is-seller" id="is-seller" />
+        <?php $_dob = $block->getLayout()->createBlock('Magento\Customer\Block\Widget\Dob')?>
+        <?php if ($_dob->isEnabled()): ?>
+            <?php echo $_dob->setDate($block->getFormData()->getDob())->toHtml()?>
+        <?php endif ?>
+        <?php $_taxvat = $block->getLayout()->createBlock('Magento\Customer\Block\Widget\Taxvat')?>
+        <?php if ($_taxvat->isEnabled()): ?>
+            <?php echo $_taxvat->setTaxvat($block->getFormData()->getTaxvat())->toHtml()?>
+        <?php endif ?>
+
+        <?php $_gender = $block->getLayout()->createBlock('Magento\Customer\Block\Widget\Gender')?>
+        <?php if ($_gender->isEnabled()): ?>
+            <?php echo $_gender->setGender($block->getFormData()->getGender())->toHtml()?>
+        <?php endif ?>
+       
+        <div class="field choice newsletter">
+					<input type="checkbox" name="is_subscribed"
+						title="Sign Up for Newsletter" value="1" id="is_subscribed"
+						class="checkbox"> <label for="is_subscribed" class="label"><span><?php echo __('Sign up for newsletter'); ?></span></label>
+				</div>
+			</fieldset>
+      <?php  if($captchaEnable) {?>
+     <?php echo $block->getChildHtml('captcha'); ?>
+     <?php }?>
+    <div class="actions-toolbar">
+				<div id="errors"></div>
+				<div id="progress_image_register" style="display: none">
+					<img
+						src="<?php echo $block->getViewFileUrl('Apptha_Sociallogin/css/images/ajax-loader.gif');  ?>"
+						alt="loading please wait" />
+				</div>
+				<div class="primary">
+					<button type="button"
+						onclick="doSociallogin(this.form.action,this.form,'errors','progress_image_register')"
+						class="action submit primary" title="Create an Account">
+						<span><?php echo __('Sign up '); ?></span>
+					</button>
+				</div>
+			</div>
+		</form>
+
+		<div id="twitter_block" style="display: none;">
+			<form id="social_tiw_login" name="social_tiw_login"
+				action="<?php echo $block->getUrl('sociallogin/index/twitterpost/'); ?>"
+				class="socialpopup_form" novalidate
+				ng-submit="social_tiw_login.$valid">
+				<h4><?php echo __('Please Enter your twitter email'); ?></h4>
+				<label for="tw_email" class="required"><?php echo __('Enter Your Email'); ?>
+                                <em style="color: red">*</em></label>
+				<div class="socialpopup-input-box">
+					<input type="email" id="tw_email" name="email" ng-model="email"
+						required /> <input type="hidden" name="twitter-seller"
+						id="twitter-seller" /> <span style="color: red"
+						ng-show="social_tiw_login.email.$error.email">Invalid email
+						address.</span>
+					<div id="twitter_error" class="popup_error_msg"></div>
+					<div class="social_login_btn">
+						<div id="progress_image_twitter" style="display: none">
+							<img src="" alt="loading please wait" />
+						</div>
+						<button type="submit" ng-disabled="social_tiw_login.$invalid"
+							class="action submit primary">
+							<span><span><?php echo __('Submit'); ?></span></span>
+						</button>
+					</div>
+				</div>
+			</form>
+                        <?php
+    /**
+     * checking whether already have account or not
+     */
+    
+    ?>      </div>
+		<div class="already_have_account"><?php echo __("Already have an account?"); ?> 
+                            <a href="javascript:void(0);"
+				onclick="show_hide_socialforms('1');"><?php echo __('Login!'); ?></a>
+		</div>
+	</div>
+	<div class="signin-or"></div>
+	<div id="all_social_iconbtn">
+		<h4><?php echo __('Sign in with'); ?></h4>
+
+                    <?php /* Social login Icons */ ?>
+                    <ul>
+                            <?php /* Facebook button */ ?>
+                            <?php if($fbloginEnabled) {?>
+                            <li id="login" class="sl_clearfix"><div
+					id='facebook_login' title="<?php echo __('Facebook'); ?>"
+					class="social_login_particular_button" onclick='fblogin();'>
+					<span class="f_icon_left icon_left_grid"></span> <input
+						type="hidden" name="facebook-seller" id="facebook-seller" />
+					<button type="button" class="fb_login inner_social_grid"
+						name="send"><?php echo __('Facebook'); ?></button>
+					<span class="f_icon_right icon_right_grid"></span>
+					<img id="progress_image_facebooklogin" style="display: none" src="<?php echo $block->getViewFileUrl('Apptha_Sociallogin/css/images/ajax-loader.gif');  ?>"/>
+				</div></li>
+                            <?php }?>            
+                                <?php /* Twitter button */ ?>
+                                <?php  if($twitterloginEnabled) {?>
+                            <li class="sl_clearfix"><div
+					onclick="show_hide_socialforms('4');" id="popup_twitter_email"
+					class="social_login_particular_button"
+					title="<?php echo __('Twitter'); ?>">
+					<span class="t_icon_left icon_left_grid"></span>
+					<button type="submit" class="twitter_login inner_social_grid"
+						name="send"><?php echo __('Twitter'); ?></button>
+					<span class="t_icon_right icon_right_grid"></span>
+				</div></li>
+                            <?php }?>
+                            <?php /* Google button */ ?>
+                            <?php if($googleloginEnabled) {?>
+                            <li class="sl_clearfix"><div
+					onclick="googlepost();" class="social_login_particular_button"
+					onclick="javascript:location.href = '<?php echo $this->getUrl('sociallogin/index/googlepost/') ?>'"
+					title="<?php echo __('Google+'); ?>">
+					<span class="gplus_icon_left icon_left_grid"></span> <input
+						type="hidden" name="google-seller" id="google-seller" />
+					<button type="submit" class="google_login inner_social_grid"
+						name="send"><?php echo __('Google+'); ?></button>
+					<span class="gplus_icon_right icon_right_grid"></span>
+				</div></li>
+                                    <?php }?>
+                    </ul>
+	</div>
+
+</div>
+<div class="bg_fade"></div>
+<script>
+window.fbAsyncInit = function() {
+  FB.init({
+    appId      : '<?php echo $appId; ?>',
+    xfbml      : true,
+    version    : 'v2.5'
+  });
+};
+
+(function(d, s, id){
+   var js, fjs = d.getElementsByTagName(s)[0];
+   if (d.getElementById(id)) {return;}
+   js = d.createElement(s); js.id = id;
+   js.src = "//connect.facebook.net/en_US/sdk.js";
+   fjs.parentNode.insertBefore(js, fjs);
+ }(document, 'script', 'facebook-jssdk'));
+
+
+function fblogin() {
+    FB.login(function(response) {
+        FB.getLoginStatus(function(response) {
+            if (response.status === 'connected') {
+                document.getElementById('progress_image_facebooklogin').style.display = "block";
+                login();
+            }
+        });
+    }, {scope: 'email'});
+    return false;
+}
+
+
+function login() {
+	 FB.api('/me', {fields: 'email,first_name,last_name'}, function(response) {
+    	if(response.email != 'undefined') {
+    		 var $=jQuery.noConflict();
+    		var fb = $('#facebook-seller').val();
+    		  if (fb == 1) {
+         window.location.href = '<?php echo $block->getUrl('sociallogin/index/fblogin') ?>?fb=1&email='+response.email+'&fname='+response.first_name+'&lname='+response.last_name;
+    		  }
+    		  else{
+    			  window.location.href = '<?php echo $block->getUrl('sociallogin/index/fblogin') ?>?fb=0&email='+response.email+'&fname='+response.first_name+'&lname='+response.last_name;
+    		  }
+
+      	} });
+}
+
+function googlepost() {
+
+	 var $=jQuery.noConflict();
+	 var fb = $('#google-seller').val();
+	    if (fb == 1) {
+      		javascript:location.href = '<?php echo $block->getUrl('sociallogin/index/googlepost') ?>?gplus=1';
+	    }
+	    else{
+	    	 javascript:location.href = '<?php echo $block->getUrl('sociallogin/index/googlepost')?>';
+	    }
+		    
+}
+
+require([
+		    'jquery',
+		    'mage/adminhtml/wysiwyg/tiny_mce/setup'
+		], function($){
+$(document).keypress(function(e) {
+    if(e.which == 13) {
+    	doSociallogin(e.target.form.action,e.target.form,'formSuccess','progress_image_login');
+    }
+});
+
+
+
+});
+</script>
+<?php }?>

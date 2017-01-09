@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © Infortis. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <!-- TODO: ifconfig does not work in <css /> tags in Magento 2.
+             This CSS file will be removed anyway, so no need to fix this. -->
+        <css src="Infortis_UltraMegamenu::css/ultra-megamenu/additional.css"
+            ifconfig="ultramegamenu/mobilemenu/hide_blocks_below" />
+    </head>
+</page>

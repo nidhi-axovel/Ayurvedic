@@ -1,0 +1,61 @@
+<?php
+// @codingStandardsIgnoreFile
+
+/**
+ * @var $block \Magento\Checkout\Block\Cart\Sidebar
+ */
+?>
+<?php
+    $theme = $this->helper('Infortis\Base\Helper\Data');
+?>
+<div data-block="minicart" class="minicart-wrapper mini-cart dropdown-block" id="minicart">
+    <?php /* <a class="action showcart" href="<?php echo $block->getShoppingCartUrl(); ?>" */ ?>
+    <a href="#header-cart" class="mini-cart-heading dropdown-heading cover skip-link skip-cart  action showcart" data-bind="scope: 'minicart_content'">
+        <span>
+            <span class="icon ic ic-cart"></span>
+            <span class="counter qty empty"
+                  data-bind="css: { empty: !!getCartParam('summary_count') == false }, blockLoader: isLoading">
+                <span class="counter-number"><!-- ko text: getCartParam('summary_count') --><!-- /ko --></span>
+                <span class="counter-label">
+                <!-- ko if: getCartParam('summary_count') -->
+                    <!-- ko text: getCartParam('summary_count') --><!-- /ko -->
+                    <!-- ko i18n: 'items' --><!-- /ko -->
+                <!-- /ko -->
+                </span>
+            </span>
+            <span class="label<?php if (!$theme->getCfg('header/cart_label')) echo ' hide'; ?>"><?php /* @escapeNotVerified */ echo __('Cart'); ?></span>
+            <span class="caret"></span>
+        </span>
+    </a>
+    <?php if ($block->getIsNeedToDisplaySideBar()): ?>
+        <div id="header-cart" class="mini-cart-content dropdown-content left-hand skip-content skip-content--style block-cart block block-minicart empty"
+            <?php /* data-role="dropdownDialog"
+            data-mage-init='{"dropdownDialog":{
+                "appendTo":"[data-block=minicart]",
+                "triggerTarget":".showcart",
+                "timeout": "2000",
+                "closeOnMouseLeave": false,
+                "closeOnEscape": true,
+                "triggerClass":"active",
+                "parentClass":"active",
+                "buttons":[]}}'   */ ?>
+            >
+            <div id="minicart-content-wrapper" data-bind="scope: 'minicart_content'">
+                <!-- ko template: getTemplate() --><!-- /ko -->
+            </div>
+        </div>
+    <?php endif ?>
+    <script>
+        window.checkout = <?php /* @escapeNotVerified */ echo \Zend_Json::encode($block->getConfig()); ?>;
+    </script>
+    <script type="text/x-magento-init">
+    {
+        "[data-block='minicart']": {
+            "Magento_Ui/js/core/app": <?php /* @escapeNotVerified */ echo $block->getJsLayout();?>
+        },
+        "*": {
+            "Magento_Ui/js/block-loader": "<?php /* @escapeNotVerified */ echo $block->getViewFileUrl('images/loader-1.gif'); ?>"
+        }
+    }
+    </script>
+</div>

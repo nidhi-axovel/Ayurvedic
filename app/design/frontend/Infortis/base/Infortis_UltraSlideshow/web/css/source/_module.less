@@ -1,0 +1,114 @@
+
+//
+//  Common
+//  _____________________________________________
+
+& when (@media-common = true) {
+
+
+
+//
+//  Slideshow wrapper
+//  ---------------------------------------------
+
+.the-slideshow-wrapper:after { display:block; content:"."; clear:both; font-size:0; line-height:0; height:0; overflow:hidden; }
+
+
+
+//
+//  Slideshow
+//  ---------------------------------------------
+
+.the-slideshow {
+    margin: 0 auto;
+}
+.the-slideshow .slides {
+    display: none;
+}
+.the-slideshow .slides .item img {
+	vertical-align: top;
+}
+
+
+
+//
+//  Banners
+//  ---------------------------------------------
+
+.the-slideshow-banners {
+    -webkit-backface-visibility: hidden; /* Fix possible glitches during animation */
+    margin-bottom: 0.1%; /* Important: a little bit bigger than slideshow bottom margin to avoid jumping on slide transition */
+}
+.the-slideshow-banners .banner {
+    position: relative; /* Container for caption */
+}
+.the-slideshow-banners .banner img {
+	vertical-align: top;
+}
+.the-slideshow-banners a.banner, /* Link can have "banner" class */
+.the-slideshow-banners .banner a {
+    display: block;
+}
+
+
+
+//
+//  Additional effects
+//  ---------------------------------------------
+
+.the-slideshow 			.fade-on-slideshow-hover,
+.the-slideshow-wrapper	.fade-on-slideshow-wrapper-hover {
+	transition:			opacity 300ms ease-in-out;
+	-moz-transition:	opacity 300ms ease-in-out;
+	-webkit-transition:	opacity 300ms ease-in-out;
+	-o-transition:		opacity 300ms ease-in-out;
+}
+.the-slideshow:hover 			.fade-on-slideshow-hover,
+.the-slideshow-wrapper:hover 	.fade-on-slideshow-wrapper-hover {
+	opacity:0.75;
+	filter:alpha(opacity=75);
+}
+
+
+
+} // end: media-common
+
+
+
+//
+//  Mobile
+//  _____________________________________________
+
+.media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__m) {
+
+	.the-slideshow-wrapper-outer { margin-top: 0 !important; /* Reset nagative top margin */ }
+	   
+	/* Slideshow navigation: move buttons to the top right corner */
+	.the-slideshow-wrapper .slider-arrows2 .owl-controls .owl-buttons .owl-prev { top:10px; right:60px; left:auto; }
+	.the-slideshow-wrapper .slider-arrows2 .owl-controls .owl-buttons .owl-next { top:10px; right:10px; left:auto; }
+
+		/* Deprecated */
+		.the-slideshow .direction-nav .prev { top:4%; right:63px; left:auto; }
+		.the-slideshow .direction-nav .next { top:4%; right:2%; }
+
+	/* Pagination */
+	.the-slideshow-wrapper .owl-pagination { display: none; }
+
+}
+
+.media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__xs) {
+
+	.the-slideshow-wrapper .owl-buttons {
+		display: none;
+	}
+
+}
+
+
+
+//
+//  Desktop
+//  _____________________________________________
+
+// .media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
+// }

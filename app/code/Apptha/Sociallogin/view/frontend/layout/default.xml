@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- /** * Apptha * * NOTICE OF LICENSE * * This source file is subject to 
+	the EULA * that is bundled with this package in the file LICENSE.txt. * It 
+	is also available through the world-wide-web at this URL: * http://www.apptha.com/LICENSE.txt 
+	* * ============================================================== * MAGENTO 
+	EDITION USAGE NOTICE * ============================================================== 
+	* This package designed for Magento COMMUNITY edition * Apptha does not guarantee 
+	correct work of this extension * on any other Magento edition except Magento 
+	COMMUNITY edition. * Apptha does not provide extension support in case of 
+	* incorrect edition usage. * ============================================================== 
+	* * @category Apptha * @package Apptha_Sociallogin * @version 1.0 * @author 
+	Apptha Team <developers@contus.in> * @copyright Copyright (c) 2016 Apptha. 
+	(http://www.apptha.com) * @license http://www.apptha.com/LICENSE.txt * */ 
+	! -->
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" layout="1column"
+	xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+	<head>
+		<script src="Apptha_Sociallogin::js/angular.js" />
+		<script src="Apptha_Sociallogin::js/jquery.min.js" />
+
+		<css src="Apptha_Sociallogin::css/sociallogin.css" />
+
+	</head>
+	<body>
+		<container name="before.body.end" as="before_body_end"
+			after="-" label="Page Bottom" before="-">
+			<block class="Apptha\Sociallogin\Block\Sociallogin" name="apptha_sociallogin"
+				ifconfig="sociallogin/sociallogin/enabled" template="sociallogin.phtml" cacheable="false">
+				<block class="Magento\Framework\View\Element\Template" name="form_additional_info_customer"
+					template="Magento_Customer::additionalinfocustomer.phtml" />
+				<block class="Magento\Captcha\Block\Captcha" name="captcha">
+					<action method="setFormId">
+						<argument name="formId" xsi:type="string">social_login</argument>
+					</action>
+					<action method="setImgWidth">
+						<argument name="width" xsi:type="string">230</argument>
+					</action>
+					<action method="setImgHeight">
+						<argument name="width" xsi:type="string">100</argument>
+					</action>
+				</block>
+			</block>
+			<referenceBlock name="head.components">
+				<block class="Magento\Framework\View\Element\Js\Components"
+					name="captcha_page_head_components" template="Magento_Captcha::js/components.phtml" />
+			</referenceBlock>
+		</container>
+	</body>
+</page>

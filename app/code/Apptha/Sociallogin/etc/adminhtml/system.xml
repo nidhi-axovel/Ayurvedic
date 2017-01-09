@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<!-- /** * Apptha * * NOTICE OF LICENSE * * This source file is subject to 
+	the EULA * that is bundled with this package in the file LICENSE.txt. * It 
+	is also available through the world-wide-web at this URL: * http://www.apptha.com/LICENSE.txt 
+	* * ============================================================== * MAGENTO 
+	EDITION USAGE NOTICE * ============================================================== 
+	* This package designed for Magento COMMUNITY edition * Apptha does not guarantee 
+	correct work of this extension * on any other Magento edition except Magento 
+	COMMUNITY edition. * Apptha does not provide extension support in case of 
+	* incorrect edition usage. * ============================================================== 
+	* * @category Apptha * @package Apptha_Sociallogin * @version 1.0 * @author 
+	Apptha Team <developers@contus.in> * @copyright Copyright (c) 2016 Apptha. 
+	(http://www.apptha.com) * @license http://www.apptha.com/LICENSE.txt * */ -->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+	<system>
+		<tab id="sociallogin" translate="label" sortOrder="1">
+			<label>Sociallogin</label>
+		</tab>
+		<section id="sociallogin" translate="label" type="text"
+			sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+			<label>Settings</label>
+			<tab>sociallogin</tab>
+			<resource>Apptha_Sociallogin::sociallogin</resource>
+			<group id="sociallogin" translate="label" type="text"
+				sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>Sociallogin</label>
+				<field id="enabled" translate="label" type="select" sortOrder="10"
+					showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enable Sociallogin</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					<backend_model>Magento\Contact\Model\System\Config\Backend\Links</backend_model>
+				</field>
+			</group>
+			<group id="facebooklogin" translate="label" type="text"
+				sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>Facebook Login</label>
+				<field id="fbloginenabled" translate="label" type="select"
+					sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enable Facebook Login</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					<backend_model>Magento\Contact\Model\System\Config\Backend\Links</backend_model>
+				</field>
+				<field id="appid" translate="label" type="text" sortOrder="2"
+					showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>App Id</label>
+					<depends>
+						<field id="fbloginenabled">1</field>
+					</depends>
+				</field>
+			</group>
+			<group id="twitterlogin" translate="label" type="text"
+				sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>Twitter Login</label>
+				<field id="twitterloginenabled" translate="label" type="select"
+					sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enable Twitter Login</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					<backend_model>Magento\Contact\Model\System\Config\Backend\Links</backend_model>
+				</field>
+				<field id="twconsumerkey" translate="label" type="text"
+					sortOrder="2" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Twitter Consumer key</label>
+					<depends>
+						<field id="twitterloginenabled">1</field>
+					</depends>
+				</field>
+				<field id="twsecretkey" translate="label" type="text"
+					sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Twitter Secret key</label>
+					<depends>
+						<field id="twitterloginenabled">1</field>
+					</depends>
+				</field>
+			</group>
+			<group id="googlelogin" translate="label" type="text"
+				sortOrder="4" showInDefault="1" showInWebsite="1" showInStore="1">
+				<label>Google plus Login</label>
+				<field id="googleloginenabled" translate="label" type="select"
+					sortOrder="1" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Enable Google plus Login</label>
+					<source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+					<backend_model>Magento\Contact\Model\System\Config\Backend\Links</backend_model>
+				</field>
+				<field id="clientid" translate="label" type="text" sortOrder="2"
+					showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Google Client ID</label>
+					<depends>
+						<field id="googleloginenabled">1</field>
+					</depends>
+				</field>
+				<field id="google_secret" translate="label" type="text"
+					sortOrder="3" showInDefault="1" showInWebsite="1" showInStore="1">
+					<label>Google Secret key</label>
+					<depends>
+						<field id="googleloginenabled">1</field>
+					</depends>
+				</field>
+			</group>
+		</section>
+	</system>
+</config>

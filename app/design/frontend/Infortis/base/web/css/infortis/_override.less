@@ -1,0 +1,110 @@
+//
+//  Override styles from selected files without
+//  overriding entire file.
+//
+
+
+
+//
+//  Common
+//  _____________________________________________
+
+& when (@media-common = true) {
+
+
+
+//
+//  Swatches
+//  ---------------------------------------------
+
+.header-regular .block-search .input-text:focus, //Focus border color for search box in the header
+._keyfocus *,
+input:not([disabled]),
+textarea:not([disabled]),
+select:not([disabled]) {
+    &:focus {
+        .lib-css(border-color, #51a7e8);
+    }
+}
+
+
+
+//
+//  Swatches
+//  ---------------------------------------------
+
+.swatch-option {
+    min-width: 20px;
+    height: 20px;
+    line-height: 20px;
+    margin-right: 5px;
+    &.text {
+        line-height: 20px;
+    }
+}
+.product-view {
+    .swatch-option {
+        min-width: 30px;
+        height: 30px;
+        line-height: 30px;
+        margin-right: 5px;
+        &.text {
+            line-height: 20px;
+        }
+    }
+}
+
+
+
+//
+//  Magento/blank
+//  From: /theme-frontend-blank/web/css/source/_loaders.less
+//  ---------------------------------------------
+
+.loading-mask {
+    background: rgba(255, 255, 255, 0.8); // Increased opacity of the overlay
+}
+
+
+
+//
+//  Magento/blank
+//  From: /theme-frontend-blank/Magento_Review/web/css/source/_module.less
+//  ---------------------------------------------
+
+.rating-summary .rating-result {
+    margin-left: 0; // Remove negative offset
+}
+
+
+
+} // end: media-common
+
+
+
+//
+//  Mobile
+//  _____________________________________________
+
+.media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__xs) {
+
+
+
+    //
+    //  Magento/blank
+    //  From: /theme-frontend-blank/Magento_Checkout/web/css/source/module/checkout/_authentication.less
+    //  From: /theme-frontend-blank/Magento_Checkout/web/css/source/module/checkout/_progress-bar.less
+    //  ---------------------------------------------
+
+    //  Position "Sign up" button just above the progress bar
+
+    .authentication-wrapper {
+        margin-top: -10px;
+    }
+    .opc-progress-bar {
+        margin-top: 30px;
+    }
+
+
+
+}

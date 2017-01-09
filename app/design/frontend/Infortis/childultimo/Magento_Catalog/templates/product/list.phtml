@@ -1,0 +1,323 @@
+<?php
+use Magento\Framework\App\Action\Action;
+
+// @codingStandardsIgnoreFile
+
+/**
+ * Product list template
+ *
+ * @var $block \Magento\Catalog\Block\Product\ListProduct
+ */
+?>
+<?php
+    $_productCollection = $block->getLoadedProductCollection();
+    $_helper = $this->helper('Magento\Catalog\Helper\Output');
+?>
+<?php if (!$_productCollection->count()): ?>
+    <div class="message info empty"><div><?php /* @escapeNotVerified */ echo __('We can\'t find products matching the selection.') ?></div></div>
+<?php else: ?>
+    <?php echo $block->getToolbarHtml() ?>
+    <?php echo $block->getAdditionalHtml() ?>
+    <?php
+    $theme = $this->helper('Infortis\Base\Helper\Data');
+    $helperLabels = $this->helper('Infortis\Base\Helper\Labels');
+    //$helperImg = $this->helper('Infortis\Infortis\Helper\Image');
+    $helperAddToLinks = $this->helper('Infortis\Base\Helper\AddToLinks');
+
+    //Image size
+    $imgWidth = intval($theme->getCfg('category/image_width'));
+    $imgHeight = $imgWidth;
+
+    //If image width is not specified, use default values
+    if ($imgWidth <= 0)
+    {
+        $imgWidth = 295;
+        $imgHeight = 295;
+    }
+    
+    //Image aspect ratio settings
+    $keepAspectRatio = $theme->getCfg('category/aspect_ratio');
+    if ($keepAspectRatio)
+    {
+        $imgHeight = 0; //Height will be calculated automatically (based on width) to keep the aspect ratio
+        // $catViewKeepFrame = FALSE;
+    }
+
+    // else
+    // {
+    //     $catViewKeepFrame = TRUE;
+    // }
+
+    // $fromReg = \Magento\Framework\App\ObjectManager::getInstance()->get('Magento\Framework\Registry')->registry('catViewKeepFrame');
+    // if ($fromReg === NULL)
+    // {
+    //     \Magento\Framework\App\ObjectManager::getInstance()->get('Magento\Framework\Registry')->register('catViewKeepFrame', $catViewKeepFrame);
+    // }
+
+    //Alternative image
+    $showAltImage = $theme->getCfg('category/alt_image');
+
+
+
+    //Mode
+    //TODO: Variables for both modes
+    $mode = $block->getMode();
+    $gc = $theme->getCfgGroup('category_grid'); //TODO: Test
+
+    //Vars for only one mode - but as code is shared by both modes
+    //then the vars need to be declared no matter what mode it is.
+    $productNameClasses = '';
+    $actionsClasses = '';
+
+
+
+    if ($mode == 'list')
+    {
+        $viewMode = 'list';
+        $imageTypeId = 'category_page_list';
+        $showDescription = true;
+        $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::FULL_VIEW;
+        $containerClasses = "{$viewMode} products-{$viewMode}";
+
+        //Get list configuration array
+        //$lc = $theme->getCfgGroup('category_list'); //TODO: change method name to getCfgGroupSettings
+
+        //List classes
+        //if ($lc['hover_effect'])
+        if ($theme->getCfg('category_list/hover_effect'))
+        {
+            $containerClasses .= ' hover-effect';
+        }
+
+        //TODO: also replace values: 1 with 2, and 2 with 1.
+
+        //TODO: change value to new one (if values will be changed at all).
+        //Move it after the mode check condition.
+        //$gc['display_swatches'] = 2;
+    }
+    else //Grid mode
+    {
+        $viewMode = 'grid';
+        $imageTypeId = 'category_page_grid';
+        $showDescription = false;
+        $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
+        $containerClasses = "{$viewMode} products-{$viewMode} products-grid-partitioned category-products-grid itemgrid itemgrid-adaptive";
+
+        //Get grid configuration array
+        //$gc = $theme->getCfgGroup('category_grid'); //TODO: change method name to getCfgGroupSettings
+        
+        //Get number of columns (from parameter or from theme config)
+        $columnCount = 3;
+        if ($block->getGridColumnCount())
+        {
+            $columnCount = $block->getGridColumnCount();
+        }
+        else
+        {
+            $columnCount = $gc['column_count'];
+        }
+        $containerClasses .= " itemgrid-{$columnCount}col";
+
+        //Grid classes
+        if ($gc['display_name'] == 1 && $gc['display_name_single_line'] == true)
+            $containerClasses .= ' single-line-name';
+        if ($gc['display_name'] == 2)
+            $productNameClasses .= ' display-onhover';
+        if ($gc['centered'])
+            $containerClasses .= ' centered';
+        if ($gc['hover_effect'])
+            $containerClasses .= ' hover-effect';
+        if ($gc['equal_height'])
+            $containerClasses .= ' equal-height';
+
+        //Size of grid elements
+        if ($gc['elements_size'])
+        {
+            $containerClasses .= ' size-' . $gc['elements_size'];
+        }
+        else
+        {
+            //Calculate size based on number of columns
+            if ($columnCount >= 6)
+            {
+                $containerClasses .= ' size-xs';
+            }
+            elseif ($columnCount >= 4)
+            {
+                $containerClasses .= ' size-s';
+            }
+        }
+
+        //Container "actions" at the bottom of the grid item stores button and addto links.
+        //If at least one of those elements was set as "Display on hover" but no element was set as "Display":
+        //apply appropriate classes to the container.
+        // if ($gc['display_addtocart'] == 2)
+        // {
+        //     $actionsClasses = ' display-onhover';
+        // }
+        // // elseif ($gc['display_addtocart'] == 1)
+        // // {
+        // //     $actionsClasses = '';
+        // // }
+
+        // If "Add to cart" button was set as "Display on hover", add proper class
+        if ($gc['display_addtocart'] == 2)
+        {
+            $actionsClasses = ' display-onhover';
+        }
+
+    } //end: grid mode
+
+    /**
+     * Position for actions regarding image size changing in vde if needed
+     */
+    $pos = $block->getPositioned();
+    ?>
+    <div class="products wrapper <?php if ($containerClasses) echo $containerClasses; ?> <?php echo 'pos-'.$pos; //TODO ?>">
+        <?php $iterator = 1; ?>
+        <ol class="products list items product-items">
+            <?php /** @var $_product \Magento\Catalog\Model\Product */ ?>
+            <?php foreach ($_productCollection as $_product): ?>
+                <?php /* @escapeNotVerified */ echo($iterator++ == 1) ? '<li class="item">' : '</li><li class="item">' ?>
+                <div class="product-item-info" data-container="product-grid">
+                    <?php
+                    $productImage = $block->getImage($_product, $imageTypeId);
+                    if ($pos != null) {
+                        $position = ' style="left:' . $productImage->getWidth() . 'px;'
+                            . 'top:' . $productImage->getHeight() . 'px;"';
+                    }
+                    ?>
+                    <div class="product-item-img" style="max-width:<?php echo $productImage->getWidth(); ?>px;">
+
+                        <?php //Product image ?>
+                        <a href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl() ?>" class="product photo product-item-photo" tabindex="-1">
+                            <?php echo $productImage->toHtml(); ?>
+                        </a>
+
+                        <?php //Product alternative image ?>
+                        <?php if ($showAltImage): ?>
+                            <?php echo $theme->getAltImgHtml($_product, $imageTypeId /*, $imgWidth, $imgHeight*/ ); ?>
+                        <?php endif; ?>
+
+                        <?php //Product labels ?>
+                        <?php echo $helperLabels->getLabels($_product); ?>
+
+                        <?php //Add-to links
+                            $addtoLinksClasses = '';
+                            if ($gc['addtolinks_position'] == true && $gc['display_addtolinks'] != 0)
+                            {
+                                $addtoLinksClasses = ' addto-links addto-links-icons addto-onimage'; //Always display
+                                if ($gc['display_addtolinks'] == 2)
+                                    $addtoLinksClasses .= ' display-onhover'; //Display only on hover
+                            }
+                        ?>
+                        <?php if ($addtoLinksClasses): ?>
+                            <?php if ($linksHtml = $helperAddToLinks->getLinksIcons($_product)): ?>
+                                <div data-role="add-to-links" class="actions-secondary<?php echo $addtoLinksClasses; ?>"><?php echo $linksHtml; ?></div>
+                            <?php endif; ?>
+                        <?php endif; ?>
+
+                    </div> <!-- end: product-item-img -->
+                    <div class="product details product-item-details">
+                        <?php
+                            $_productNameStripped = $block->stripTags($_product->getName(), null, true);
+                        ?>
+
+                        <?php if ($gc['display_name'] != 0): ?>
+                        <strong class="product name product-item-name product-name<?php echo $productNameClasses; ?>">
+                            <a class="product-item-link"
+                               href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl() ?>" title="<?php echo $_productNameStripped; ?>">
+                                <?php /* @escapeNotVerified */ echo $_helper->productAttribute($_product, $_product->getName(), 'name'); ?>
+                            </a>
+                        </strong>
+                        <?php endif; ?>
+
+                        <?php $gc['display_swatches'] = 1; //TODO: remove test value ?>
+                        <?php //TODO: we may later remove redundant classes such as "product-swatches-wrapper" ?>
+                        <?php $productDetailsHtml = $block->getProductDetailsHtml($_product); ?>
+                        <?php if ($productDetailsHtml): ?>
+                            <?php if ($gc['display_swatches'] == 2): //Display on hover ?>
+                                <div class="display-onhover product-swatches-wrapper"><?php echo $productDetailsHtml; ?></div>
+                            <?php elseif ($gc['display_swatches'] == 1): //Always display ?>
+                                <?php echo $productDetailsHtml; ?>
+                            <?php endif; ?>
+                        <?php endif; ?>
+
+                        <?php $reviewsSummaryHtml = $block->getReviewsSummaryHtml($_product, $templateType); ?>
+                        <?php if ($reviewsSummaryHtml): ?>
+                            <?php if ($gc['display_rating'] == 2): //Display on hover ?>
+                                <div class="display-onhover product-reviews-wrapper"><?php echo $reviewsSummaryHtml; ?></div>
+                            <?php elseif ($gc['display_rating'] == 1): //Always display ?>
+                                <?php echo $reviewsSummaryHtml; ?>
+                            <?php endif; ?>
+                        <?php endif; ?>
+
+                        <?php if ($gc['display_price'] == 2): //Display on hover ?>
+                            <div class="display-onhover"><?php /* @escapeNotVerified */ echo $block->getProductPrice($_product) ?></div>
+                        <?php elseif ($gc['display_price'] == 1): //Always display ?>
+                            <?php /* @escapeNotVerified */ echo $block->getProductPrice($_product) ?>
+                        <?php endif; ?>
+
+                        <div class="product-item-inner">
+                            <div class="product actions product-item-actions <?php echo $actionsClasses; ?>"<?php echo strpos($pos, $viewMode . '-actions') ? $position : ''; ?>>
+                                <div class="actions-primary"<?php echo strpos($pos, $viewMode . '-primary') ? $position : ''; ?>>
+                                    <?php if ($_product->isSaleable()): ?>
+                                        <?php $postParams = $block->getAddToCartPostParams($_product); ?>
+                                        <form data-role="tocart-form" action="<?php /* @escapeNotVerified */ echo $postParams['action']; ?>" method="post">
+                                            <input type="hidden" name="product" value="<?php /* @escapeNotVerified */ echo $postParams['data']['product']; ?>">
+                                            <input type="hidden" name="<?php /* @escapeNotVerified */ echo Action::PARAM_NAME_URL_ENCODED; ?>" value="<?php /* @escapeNotVerified */ echo $postParams['data'][Action::PARAM_NAME_URL_ENCODED]; ?>">
+                                            <?php echo $block->getBlockHtml('formkey')?>
+                                            <button type="submit"
+                                                    title="<?php echo $block->escapeHtml(__('Add to Cart')); ?>"
+                                                    class="action tocart primary">
+                                                <span><?php /* @escapeNotVerified */ echo __('Add to Cart') ?></span>
+                                            </button>
+                                        </form>
+                                    <?php else: ?>
+                                        <?php if ($_product->getIsSalable()): ?>
+                                            <div class="stock available"><span><?php /* @escapeNotVerified */ echo __('In stock') ?></span></div>
+                                        <?php else: ?>
+                                            <div class="stock unavailable"><span><?php /* @escapeNotVerified */ echo __('Out of stock') ?></span></div>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </div>
+                                <?php //Add-to links
+                                    $addtoLinksClasses = '';
+                                    if ($gc['addtolinks_position'] == false && $gc['display_addtolinks'] != 0)
+                                    {
+                                        $addtoLinksClasses = ' addto-links addto-links-icons'; //Always display
+                                        // if ($gc['display_addtolinks'] == 2)
+                                        //     $addtoLinksClasses .= ' display-onhover'; //Display only on hover
+                                    }
+                                ?>
+                                <?php if ($addtoLinksClasses): ?>
+                                    <?php if ($linksHtml = $helperAddToLinks->getLinksIcons($_product)): ?>
+                                        <div data-role="add-to-links" class="actions-secondary<?php echo $addtoLinksClasses; ?>"<?php echo strpos($pos, $viewMode . '-secondary') ? $position : ''; ?>><?php echo $linksHtml; ?></div>
+                                    <?php endif; ?>
+                                <?php endif; ?>
+                            </div> <!-- end: product-item-actions -->
+                            <?php if ($showDescription): ?>
+                                <div class="product description product-item-description">
+                                    <?php /* @escapeNotVerified */ echo $_helper->productAttribute($_product, $_product->getShortDescription(), 'short_description') ?>
+                                    <a href="<?php /* @escapeNotVerified */ echo $_product->getProductUrl() ?>" title="<?php /* @escapeNotVerified */ echo $_productNameStripped ?>"
+                                       class="action more"><?php /* @escapeNotVerified */ echo __('Learn More') ?></a>
+                                </div>
+                            <?php endif; ?>
+                        </div> <!-- end: product-item-inner -->
+                    </div> <!-- end: product-item-details -->
+                </div>
+                <?php echo($iterator == count($_productCollection)+1) ? '</li>' : '' ?>
+            <?php endforeach; ?>
+        </ol>
+    </div>
+    <?php echo $block->getToolbarHtml() ?>
+    <?php if (!$block->isRedirectToCartEnabled()) : ?>
+        <script type="text/x-magento-init">
+        {
+            "[data-role=tocart-form], .form.map.checkout": {
+                "catalogAddToCart": {}
+            }
+        }
+        </script>
+    <?php endif; ?>
+<?php endif; ?>

@@ -1,0 +1,445 @@
+
+//
+//  Variables
+//  _____________________________________________
+
+@product-name-link__color: @text__color;
+@product-name-link__color__active: @text__color;
+@product-name-link__color__hover: @text__color;
+@product-name-link__color__visited: @text__color;
+
+@product-name-link__text-decoration: none;
+@product-name-link__text-decoration__active: @link__hover__text-decoration;
+@product-name-link__text-decoration__hover: @link__hover__text-decoration;
+@product-name-link__text-decoration__visited: @link__hover__text-decoration;
+
+//
+//  Common
+//  _____________________________________________
+
+& when (@media-common = true) {
+
+//  Product Lists
+// .products {
+//     margin: @indent__l 0;
+// }
+
+.product {
+    &-items {
+        &:extend(.abs-reset-list all); //TODO: check
+    }
+    &-item {
+        vertical-align: top;
+        .products-grid & {
+            width: 100%/2;
+            display: inline-block;
+        }
+        &:extend(.abs-add-box-sizing all);
+
+        &-name {
+            &:extend(.abs-product-link all);
+            display: block;
+            margin: @indent__xs 0;
+            word-wrap: break-word;
+            -webkit-hyphens: auto;
+            -moz-hyphens: auto;
+            -ms-hyphens: auto;
+            hyphens: auto;
+        }
+
+        &-info {
+            width: 152px;
+            max-width: 100%;
+            .page-products & {
+                width: 240px;
+            }
+        }
+
+        &-actions {
+            //display: none;
+            .actions-secondary {
+                > .action {
+                    &:extend(.abs-actions-addto-gridlist all);
+                    &:before {
+                        margin: 0;
+                    }
+                    span {
+                        &:extend(.abs-visually-hidden all);
+                    }
+                }
+            }
+        }
+        &-description {
+            margin: @indent__m 0;
+        }
+
+    } // end: product-item class which was removed from the theme
+}
+
+//  New:
+//  In the Base theme the ".product-item" class is not being used in all product listings (i.e. in sliders and custom grids) 
+//  because ".product-item" has complex width and margins calculations specific for Blank theme's built-in product grids.
+//  Therefore some of the default styles were moved to the new rule (below) to share these styles with the additional selector
+//  ".product-items .item" which is being used in custom listings.
+
+.product-item,
+.product-items .item {
+
+    // .product-reviews-summary {
+    //     .rating-summary {
+    //         margin: 0 4px 0 0;
+    //     }
+    //     .reviews-actions {
+    //         margin-top: 5px;
+    //         text-transform: lowercase;
+    //         font-size: @font-size__s;
+    //     }
+    // }
+
+    // Price styles copied (and modified) from Luma theme
+    .price-box {
+
+        .price {
+            .lib-font-size(14);
+            font-weight: bold;
+        }
+        .price-label {
+            // font-size: @font-size__s;
+            .lib-css(color, @text__color__muted);
+            &:after {
+                content: ":";
+            }
+        }
+    }
+
+    .old-price {
+        margin: @indent__xs 0;
+        .price {
+            font-weight: @font-weight__regular;
+        }
+    }
+
+    .minimal-price {
+        .price-container {
+            // display: block;
+            display: inline-block; // New
+        }
+
+        // New:
+        .price-label {
+            margin-right: 3px;
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+    }
+
+    .minimal-price-link {
+        margin-top: @indent__xs;
+    }
+
+    .price-from,
+    .price-to {
+        margin: 0;
+    }
+
+    // .tocompare {
+    //     .lib-icon-font-symbol(
+    //         @icon-compare-empty
+    //     );
+    // }
+
+    .tocart {
+        white-space: nowrap;
+
+        // If block is inside a sidebar (so it's narrow), button text can be wrapped
+        .sidebar & {
+            white-space: normal;
+        }
+
+        // New:
+        // Increase vertical padding to make the button as high as "addto" links
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+
+}
+
+// New:
+// Remove default width limitation when item
+// is inside itemgrid or itemslider
+// or inside element with generic class "product-slider"
+.products-grid.itemgrid,
+.itemslider,
+.product-slider {
+    .product-item-info {
+        width: auto;
+        max-width: none;
+    }
+}
+
+// .column.main {
+//     .product {
+//         &-items {
+//             margin-left: -20px;
+//         }
+//         &-item {
+//             padding-left: 20px;
+//         }
+//     }
+// }
+
+.price-container {
+
+    // New: override default font size (18) of prices including-tax and excluding-tax.
+    // Required because in product listings some prices are not placed inside element with "price" class.
+    .price-including-tax,
+    .price-excluding-tax {
+        .lib-font-size(14);
+    }
+
+    .price {
+        .lib-font-size(14);
+    }
+
+    .price-including-tax + .price-excluding-tax,
+    .weee {
+        margin-top: 5px;
+    }
+
+    .price-including-tax + .price-excluding-tax,
+    .weee,
+    .price-including-tax + .price-excluding-tax .price,
+    .weee .price,
+    .weee + .price-excluding-tax:before,
+    .weee + .price-excluding-tax .price {
+        .lib-font-size(11);
+    }
+
+    .weee {
+        &:before {
+            content: "("attr(data-label) ": ";
+        }
+        &:after {
+            content: ")";
+        }
+        + .price-excluding-tax {
+            &:before {
+                content: attr(data-label) ": ";
+            }
+        }
+    }
+}
+
+.products-list {
+    .product {
+        &-item {
+            display: table;
+            width: 100%;
+
+            &-info {
+                display: table-row;
+            }
+            // &-photo {
+            //     width: 1%;
+            //     padding: 0 @indent__l @indent__l 0;
+            //     vertical-align: top;
+            //     display: table-cell;
+            // }
+            &-details {
+                vertical-align: top;
+                display: table-cell;
+                //New:
+                padding: 0 0 0 @indent__l;
+            }
+            // New: image is wrapped inside "product-item-img" block
+            &-img {
+                width: 1%;
+                padding: 0 0 @indent__l 0;
+                vertical-align: top;
+                display: table-cell;
+            }
+        }
+    }
+    .product-image-wrapper {
+        &:extend(.abs-reset-image-wrapper all);
+    }
+}
+
+}
+
+//
+//  Mobile
+//  _____________________________________________
+
+.media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__s) {
+    .products-list .product {
+        &-item {
+            table-layout: fixed;
+            &-photo {
+                padding: 0 @indent__s @indent__s 0;
+                width: 30%;
+            }
+        }
+    }
+}
+
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__s) {
+    .product {
+        &-item {
+            .products-grid & {
+                margin-bottom: @indent__l;
+            }
+            &-info {
+            }
+
+            &-actions {
+                display: block;
+                .products-grid & {
+                    margin: @indent__s 0;
+                }
+                .actions-primary + .actions-secondary {
+                    display: table-cell;
+                    width: 50%;
+                    padding-left: 5px;
+                    white-space: nowrap;
+                    > * {
+                        white-space: normal;
+                    }
+                    > .action {
+                    }
+
+                    // New:
+                    // Styles needed when icons are displayed inside secondary actions container
+                    vertical-align: middle;
+                    padding-left: @product__addto-icon__space-between;
+                }
+                .actions-primary {
+                    display: table-cell;
+                    // New: align the content - needed when displays "Out of stock" info
+                    vertical-align: middle;
+                    .stock.unavailable {
+                        margin-right: 3px;
+                    }
+                }
+            }
+        }
+    }
+
+    // New: updated in Mage 2.1
+    .products-grid .product-item {
+        width: 100%/3;
+    }
+
+    .page-products,
+    .page-layout-1column,
+    .page-layout-3columns,
+    .page-products.page-layout-1column,
+    .page-products.page-layout-3columns {
+        .products-grid {
+            .product-item {
+                width: 100%/3;
+            }
+        }
+    }
+}
+
+//
+//  Desktop
+//  _____________________________________________
+
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
+    .page-products {
+        .products-grid {
+            .product-item {
+                width: 100%/3;
+            }
+        }
+    }
+
+    .page-products.page-layout-1column {
+        .products-grid {
+            .product-item {
+                width: 100%/4;
+            }
+        }
+    }
+
+    .page-products.page-layout-3columns {
+        .products-grid {
+            .product-item {
+                width: 100%/2;
+            }
+        }
+    }
+}
+
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__l) {
+    .products-grid {
+        .product-item {
+            width: 100%/5;
+        }
+    }
+
+    .page-layout-1column {
+        .products-grid {
+            .product-item {
+                width: 100%/6;
+            }
+        }
+    }
+
+    .page-layout-3columns {
+        .products-grid {
+            .product-item {
+                width: 100%/4;
+            }
+        }
+    }
+
+    .page-products {
+        .products-grid {
+            .product-items {
+                margin: 0;
+            }
+            
+            .product-item {
+                margin-left: calc(~'(100% - 4 * 23.233%) / 3');
+                padding: 0;
+                width: 23.233%;
+
+                &:nth-child(4n + 1) {
+                    margin-left: 0;
+                }
+            }
+        }
+    }
+
+    .page-products {
+        &.page-layout-1column {
+            .products-grid {
+                .product-item {
+                    margin-left: 0;
+                    width: 100%/5;
+                }
+            }
+        }
+
+        &.page-layout-3columns {
+            .products-grid {
+                .product-item {
+                    margin-left: 1%;
+                    width: 32.667%;
+
+                    &:nth-child(3n) {
+                        margin-left: 1%;
+                    }
+
+                    &:nth-child(3n + 1) {
+                        margin-left: 0;
+                    }
+                }
+            }
+        }
+    }
+}

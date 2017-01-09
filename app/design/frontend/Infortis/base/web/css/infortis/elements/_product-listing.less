@@ -1,0 +1,460 @@
+//
+//  Product listings
+//
+
+
+
+//
+//  Variables
+//  _____________________________________________
+
+@product-listing__vert-space__l: 15px;
+@product-listing__vert-space__m: 10px;
+@product-listing__vert-space__s: 5px;
+
+
+
+//
+//  Common
+//  _____________________________________________
+
+& when (@media-common = true) {
+
+
+
+//
+//  Common styles for view types: list and grid
+//  _____________________________________________
+
+.products-list,
+.products-grid {
+    .product-item-name {
+        color: inherit;
+    }
+    // Product image and alternative image
+    .product-item-img {
+        position: relative;
+        .alt-img {
+            display: none;
+            position:absolute;
+            top:0;
+            left:0;
+            z-index: 1;
+        }
+    }
+}
+
+//
+//  View type: list
+//  _____________________________________________
+
+.products-list {
+    .item {
+        border-top: 1px solid @global-border-color__light;
+        &:extend(.abs-global-border-color-light all);
+        padding-top: 20px;
+        padding-bottom: 20px;
+        background-color: #fff;
+        position: relative; // For hover effect
+        transition:         box-shadow 0ms ease-in;
+        -moz-transition:    box-shadow 0ms ease-in;
+        -webkit-transition: box-shadow 0ms ease-in;
+        -o-transition:      box-shadow 0ms ease-in;
+    }
+    .product-item-name {
+        font-size: 1.6rem;
+        line-height: 2.2rem;
+    }
+
+    // Legacy styles
+    .product-shop-inner {
+        border-right: 1px solid #e5e5e5;
+        padding-right: 15px
+    }
+    .right-column {
+        float: right;
+    }
+    .product-item-name {
+        margin: 0 0 15px;
+    }
+    .price-box {
+        margin: 0 0 15px;
+        font-size: 1.3333em;
+        line-height: 1.25em;
+    }
+    .ratings {
+        margin: 10px 0;
+    }
+    .desc {
+        margin: 15px 0px;
+    }
+    .btn-cart {
+        width: 100%;
+        max-width: 180px;
+    }
+    a.btn-cart {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    .button span {
+        float: none;
+    }
+    .availability {
+        float: none;
+        margin: 15px 0;
+    }
+    // Hover effect
+    &.hover-effect .item:hover {
+        margin-left: -1%;
+        margin-right: -1%;
+        padding-left: 1%;
+        padding-right: 1%;
+        z-index: 10;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        border-color: transparent;
+        transition: box-shadow 400ms ease-out;
+        -moz-transition: box-shadow 400ms ease-out;
+        -webkit-transition: box-shadow 400ms ease-out;
+        -o-transition: box-shadow 400ms ease-out;
+    }
+
+}
+
+//
+//  View type: grid
+//  _____________________________________________
+
+.products-grid {
+
+    .item {
+        margin: 0;
+        padding-top: 20px;
+        padding-bottom: 20px;
+        position: relative; // For hover effect
+        -webkit-tap-highlight-color: transparent;
+
+        // Display grid item elements only on hover (via script)
+        .display-onhover {
+            display: none;
+        }
+    }
+    .product-item-name {
+        margin: @product-listing__vert-space__l 0 @product-listing__vert-space__m;
+
+        // Sizes can be modified by additional classes (e.g. for different number of columns).
+        // These values are the same as for size-s.
+        font-size: 1.4rem;
+        line-height: 2.0rem;
+    }
+    .product-item-img {
+        margin: 0 auto;
+    }
+    .price-box {
+        margin: @product-listing__vert-space__m 0;
+    }
+    .ratings {
+        margin: @product-listing__vert-space__m 0;
+    }
+    .actions {
+        margin: @product-listing__vert-space__m 0 0;
+    }
+    .availability {
+        float: none;
+        margin: @product-listing__vert-space__s 0;
+    }
+
+    //
+    //  Prices old/special inline
+    //  ---------------------------------------------
+
+    .old-price,
+    .special-price {
+        display: inline-block;
+        .price-label {
+            display: none;
+        }
+    }
+    .special-price + .old-price {
+        margin-left: 4px;
+        .rtl & {
+            margin-left: 0;
+            margin-right: 4px;
+        }
+    }
+
+    //
+    //  Product name in a single line
+    //  ---------------------------------------------
+
+    &.single-line-name {
+        .product-item-name {
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+        }
+        .item:hover .product-item-name {
+            overflow: visible;
+            white-space: normal;
+        }
+    }
+
+    //
+    //  Align to the center
+    //  ---------------------------------------------
+
+    &.centered {
+        .item {
+            text-align: center;
+            .ratings .rating-box,
+            .btn-cart {
+                margin-left: 0;
+                margin-right: 0;
+            }
+            .ratings .amount {
+                margin-left: 3px;
+            }
+            input.checkbox {
+                float: none;
+            }
+            .actions .addto-links a {
+                float: none;
+                margin: 0;
+            }
+        }
+    }
+
+    //
+    //  Equal height of items
+    //  ---------------------------------------------
+
+    &.equal-height {
+        .item {
+            // TODO: remove, padding will be added dynamically by script
+            padding-bottom: 56px; // Height of button + bottom position of "actions" container
+            .actions {
+                position: absolute;
+                bottom: 20px;
+            }
+        }
+    }
+    // Deprecated: Remove equal height
+    &.auto-height .item .actions {
+        position: static;
+        bottom: auto;
+    }
+
+    //
+    //  Grid in category view
+    //  ---------------------------------------------
+
+    &-partitioned {
+        .item {
+            border-top: 1px solid @global-border-color__light;
+            &:extend(.abs-global-border-color-light all);
+            border-left: none;
+            border-right: none;
+            zoom: 1;
+            padding-top: 20px;
+            padding-bottom: 20px;
+            // Important: if padding value changed here, also requires the same changes in "hover-effect"
+            // and in helper methods (PHP) which dynamically generate grid styles
+            padding-left: 1%;
+            padding-right: 1%;
+            background-color: #fff;
+            transition:         box-shadow 0ms ease-in;
+            -moz-transition:    box-shadow 0ms ease-in;
+            -webkit-transition: box-shadow 0ms ease-in;
+            -o-transition:      box-shadow 0ms ease-in;
+        }
+
+        // Hover effect
+        &.hover-effect .item:hover {
+            margin-left: -1%;
+            margin-right: -1%;
+            padding-left: 2%;
+            padding-right: 2%;
+            z-index: 10;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            border-color: transparent;
+            transition:         box-shadow 400ms ease-out;
+            -moz-transition:    box-shadow 400ms ease-out;
+            -webkit-transition: box-shadow 400ms ease-out;
+            -o-transition:      box-shadow 400ms ease-out;
+        }
+    }
+
+    &-ext {
+        .item {
+            .product-item-info {
+                border-top: 1px solid @global-border-color__light;
+                border-left: none;
+                border-right: none;
+                border-bottom: none;
+                //zoom: 1;
+                padding: 10px 0px;
+                background-color: #fff;
+                transition:         box-shadow 0ms ease-in;
+                -moz-transition:    box-shadow 0ms ease-in;
+                -webkit-transition: box-shadow 0ms ease-in;
+                -o-transition:      box-shadow 0ms ease-in;
+            }
+        }
+
+        // Hover effect
+        &.hover-effect {
+            .item:hover {
+                .product-item-info {
+                    border-color: transparent;
+                    margin-left: -20px;
+                    margin-right: -20px;
+                    padding-left: 20px;
+                    padding-right: 20px;
+                    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+                    transition:         box-shadow 400ms ease-out;
+                    -moz-transition:    box-shadow 400ms ease-out;
+                    -webkit-transition: box-shadow 400ms ease-out;
+                    -o-transition:      box-shadow 400ms ease-out;
+
+                    // TODO: position relative needed only for z-index? It may break element positioning
+                    // - depending on relative to which container we will position elements.
+                    position: relative;
+                    z-index: 3; //TODO: 2 is OK but doesn't cover star ratings - check this.
+                }
+            }
+        }
+    }
+
+}
+
+//
+//  Grid: additional styles
+//  _____________________________________________
+
+//  Display elements only on hover (for sliders). 
+//  Deprecated, may be used in the future.
+
+.products-grid {
+    .item .visible-onhover {
+        visibility: hidden;
+        opacity: 0;
+        transition:         visibility 0s ease-in-out 600ms, opacity 300ms ease-in-out 300ms;
+        -moz-transition:    visibility 0s ease-in-out 600ms, opacity 300ms ease-in-out 300ms;
+        -webkit-transition: visibility 0s ease-in-out 600ms, opacity 300ms ease-in-out 300ms;
+        -o-transition:      visibility 0s ease-in-out 600ms, opacity 300ms ease-in-out 300ms;
+    }
+    .item:hover .visible-onhover {
+        visibility: visible;
+        opacity: 1;
+        transition:         visibility 0s ease-in-out 0s, opacity 300ms ease-in-out 100ms;
+        -moz-transition:    visibility 0s ease-in-out 0s, opacity 300ms ease-in-out 100ms;
+        -webkit-transition: visibility 0s ease-in-out 0s, opacity 300ms ease-in-out 100ms;
+        -o-transition:      visibility 0s ease-in-out 0s, opacity 300ms ease-in-out 100ms;
+    }
+}
+
+
+
+} /* end: media-common */
+
+
+
+//
+//  Mobile
+//  _____________________________________________
+
+.media-width(@extremum, @break) when (@extremum = 'max') and (@break = @screen__m) {
+
+    //
+    //  View type: list
+    //  _____________________________________________
+
+    .products-list {
+
+        // Cancel "hover effect" styles: apply the same styles which item has without "hover effect"
+        &.hover-effect {
+            .item {
+                border-top: none;
+            }
+            .item:hover {
+                margin-left: 0;
+                margin-right: 0;
+                padding-left: 0;
+                padding-right: 0;
+                box-shadow: none !important;
+            }
+        }
+
+    }
+
+}
+
+
+
+//
+//  Desktop
+//  _____________________________________________
+
+.media-width(@extremum, @break) when (@extremum = 'min') and (@break = @screen__m) {
+
+
+    //
+    //  View type: grid
+    //  _____________________________________________
+
+    .products-grid {
+
+        //  Override default size of product name
+
+        .product-item-name {
+            font-size: 1.6rem;
+            line-height: 2.2rem;
+        }
+
+        //
+        //  Change size of grid item elements
+        //  ---------------------------------------------
+
+        &.size-s {
+            .product-item-name {
+                font-size: 1.4rem;
+                line-height: 2.0rem;
+            }
+            // .item .btn-cart {
+            //     line-height: 3em;
+            //     padding-left: 15px;
+            //     padding-right: 15px;
+            // }
+            .sticker {
+                width: 45px;
+                height: 45px;
+                font-size: 1em;
+            }
+            .item:hover .sticker {
+                width: 50px;
+                height: 50px;
+            }
+        }
+        &.size-xs {
+            .product-item-name {
+                font-size: 1.3rem;
+                line-height: 1.8rem;
+            }
+            // .item .btn-cart {
+            //     line-height: 2.5em;
+            //     padding-left: 8px;
+            //     padding-right: 8px;
+            // }
+            .sticker {
+                width: 40px;
+                height: 40px;
+                font-size: 11px;
+            }
+            .item:hover .sticker {
+                width: 45px;
+                height: 45px;
+            }
+        }
+
+    }
+
+}

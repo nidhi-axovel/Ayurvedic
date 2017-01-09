@@ -1,0 +1,541 @@
+<?php
+// @codingStandardsIgnoreFile
+
+/* @var $block \Magento\Catalog\Block\Product\AbstractProduct */
+?>
+
+<?php
+$theme = $this->helper('Infortis\Base\Helper\Data');
+
+switch ($type = $block->getType()) {
+
+    case 'related-rule':
+        if ($exist = $block->hasItems()) {
+            $type = 'related';
+            $class = $type;
+
+            $image = 'related_products_list';
+            $title = __('Related Products');
+            $items = $block->getAllItems();
+            $limit = $block->getPositionLimit();
+            $shuffle = (int) $block->isShuffled();
+            $canItemsAddToCart = $block->canItemsAddToCart();
+
+            $showWishlist = true;
+            $showCompare = true;
+            $showCart = false;
+            $templateType = null;
+            $description = false;
+        }
+    break;
+
+    case 'related':
+        /** @var \Magento\Catalog\Block\Product\ProductList\Related $block */
+        if ($exist = $block->getItems()->getSize()) {
+            $type = 'related';
+            $class = $type;
+
+            $image = 'related_products_list';
+            $title = __('Related Products');
+            $items = $block->getItems();
+            $limit = 0;
+            $shuffle = 0;
+            //$canItemsAddToCart = $block->canItemsAddToCart();
+
+            $showWishlist = true;
+            $showCompare = true;
+            $showCart = false;
+            $templateType = null;
+            $description = false;
+
+            $breakpoints = $block->getBreakpoints();
+            if ($breakpoints === NULL)
+            {
+                $breakpoints = $theme->getCfg('product_page/related_breakpoints');
+            }
+            if (empty($breakpoints))
+            {
+                $breakpoints = '[0, 1], [320, 2], [480, 3], [768, 1]'; //Set default breakpoints
+            }
+
+            $timeout = intval($theme->getCfg('product_page/related_timeout'));
+
+            // If related checkbox not disabled in theme's config, get the value of $canItemsAddToCart
+            $canItemsAddToCart = false;
+            if ($theme->getCfg('product_page/related_checkbox'))
+            {
+                $canItemsAddToCart = $block->canItemsAddToCart();
+            }
+
+            // TODO: remove obsolete option
+            // Number of products displayed in a single slide
+            //$productCountInSlide = intval($theme->getCfg('product_page/related_count'));
+        }
+    break;
+
+    case 'upsell-rule':
+        if ($exist = $block->hasItems()) {
+            $type = 'upsell';
+            $class = $type;
+
+            $image = 'upsell_products_list';
+            $title = __('We found other products you might like!');
+            $items = $block->getAllItems();
+            $limit = $block->getPositionLimit();
+            $shuffle = (int) $block->isShuffled();
+
+            $showWishlist = false;
+            $showCompare = false;
+            $showCart = false;
+            $templateType = null;
+            $description = false;
+            $canItemsAddToCart = false;
+        }
+    break;
+
+    case 'upsell':
+        /** @var \Magento\Catalog\Block\Product\ProductList\Upsell $block */
+        if ($exist = count($block->getItemCollection()->getItems())) {
+            $type = 'upsell';
+            $class = $type;
+
+            $image = 'upsell_products_list';
+            $title = __('We found other products you might like!');
+            $items = $block->getItemCollection()->getItems();
+            $limit = $block->getItemLimit('upsell');
+            $shuffle = 0;
+
+            $showWishlist = false;
+            $showCompare = false;
+            $showCart = false;
+            $templateType = null;
+            $description = false;
+            $canItemsAddToCart = false;
+
+            $breakpoints = $block->getBreakpoints();
+            if ($breakpoints === NULL)
+            {
+                $breakpoints = $theme->getCfg('product_page/upsell_breakpoints');
+            }
+            if (empty($breakpoints))
+            {
+                $breakpoints = '[0, 1], [320, 2], [480, 3], [992, 4], [1200, 5]'; //Set default breakpoints
+            }
+
+            $timeout = intval($theme->getCfg('product_page/upsell_timeout'));
+        }
+    break;
+
+    case 'crosssell-rule':
+        /** @var \Magento\Catalog\Block\Product\ProductList\Crosssell $block */
+        if ($exist = $block->hasItems()) {
+            $type = 'crosssell';
+            $class = $type;
+
+            $image = 'cart_cross_sell_products';
+            $title = __('More Choices:');
+            $items = $block->getItemCollection();
+
+            $showWishlist = true;
+            $showCompare = true;
+            $showCart = true;
+            $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
+            $description = false;
+            $canItemsAddToCart = false;
+        }
+    break;
+
+    case 'crosssell':
+        /** @var \Magento\Catalog\Block\Product\ProductList\Crosssell $block */
+        if ($exist = $block->getItemCount()) {
+            $type = 'crosssell';
+            $class = $type;
+
+            $image = 'cart_cross_sell_products';
+            $title = __('More Choices:');
+            $items = $block->getItems();
+
+            $showWishlist = true;
+            $showCompare = true;
+            $showCart = true;
+            $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
+            $description = false;
+            $canItemsAddToCart = false;
+
+            $breakpoints = $block->getBreakpoints();
+            if (empty($breakpoints))
+            {
+                $breakpoints = '[0, 1], [320, 2], [480, 3], [992, 4], [1200, 5], [1440, 6]'; //Set default breakpoints
+            }
+        }
+    break;
+
+    case 'new':
+        if ($exist = $block->getProductCollection()) {
+            $type = 'new';
+            $mode = 'grid';
+            $type = $type . ' ' . $mode;
+
+            $class = 'widget' . ' ' . $type;
+
+            $image = 'new_products_content_widget_grid';
+            $title = __('New Products');
+            $items = $exist;
+
+            $showWishlist = true;
+            $showCompare = true;
+            $showCart = true;
+            $templateType = \Magento\Catalog\Block\Product\ReviewRendererInterface::SHORT_VIEW;
+            $description = ($mode == 'list') ? true : false;
+            $canItemsAddToCart = false;
+        }
+    break;
+
+    case 'other':
+    break;
+}
+?>
+
+<?php if ($exist):?>
+    <?php
+    // $helperAddToLinks = $this->helper('Infortis\Base\Helper\AddToLinks');
+
+    $sliderClasses = '';
+    $gridClasses = '';
+    $sliderId = "itemslider-product-{$class}";
+
+    // If breakpoints not set yet, set default breakpoints
+    if (!isset($breakpoints))
+    {
+        $breakpoints = '[0, 1], [320, 2], [480, 3], [992, 4], [1200, 5]';
+    }
+
+    //
+    // Slider configuration
+    // ----------------------------------------------
+
+    // // Single item
+    // if ($_collectionSize == 1)
+    // {
+    //     $sliderClasses .= ' single-item';
+    // }
+
+    // Breakpoints
+    if (!isset($breakpoints))
+    {
+        $breakpoints = $this->getBreakpoints();
+        if ($breakpoints === NULL)
+        {
+            $breakpoints = '[0, 1], [320, 2], [480, 3], [768, 4], [992, 5], [1200, 6]';
+        }
+    }
+
+    // Responsive mode on/off and number of items
+    $isResponsive = $this->getIsResponsive();
+    if ($isResponsive === NULL)
+    {
+        $isResponsive = true;
+    }
+
+    if (!$isResponsive)
+    {
+        $showItems = $this->getShowItems();
+        if (!$showItems)
+        {
+            $showItems = 5;
+        }
+    }
+
+    // Timeout (automatic scrolling)
+    if (!isset($timeout))
+    {
+        $timeout = $this->getTimeout();
+        if ($timeout === NULL)
+        {
+            $timeout = intval($theme->getCfg('product_slider/timeout'));
+        }
+        else
+        {
+            $timeout = intval($timeout);
+        }
+    }
+
+    // Number of items that should move on scroll
+    $move = $this->getMove();
+    if ($move === NULL)
+    {
+        $move = 0;
+    }
+    else
+    {
+        $move = intval($move);
+    }
+
+    // Loop
+    $loop = $this->getLoop();
+    if ($loop === NULL)
+    {
+        $loop = $theme->getCfg('product_slider/loop');
+    }
+
+    // Speed (arrows / touch swipe)
+    $speed = intval($theme->getCfg('product_slider/speed'));
+
+    // Speed (automatic scrolling / pagination)
+    $autoSpeed = intval($theme->getCfg('product_slider/auto_speed'));
+
+    // Pause on mouse hover
+    $pause = $theme->getCfg('product_slider/pause');
+
+    // Lazy loading
+    $lazy = $theme->getCfg('product_slider/lazy');
+
+    // Pagination
+    $pagination = $this->getPagination();
+
+    //
+    // Grid configuration
+    // ----------------------------------------------
+
+    // Image proportions and size
+    $keepAspectRatio = $this->getData('keep_aspect_ratio');
+    if ($keepAspectRatio === NULL)
+    {
+        $keepAspectRatio = $theme->getCfg('product_slider/keep_aspect_ratio');
+    }
+
+    // Image width
+    $imgWidth = $this->getData('img_width'); //getImgWidth();
+    if ($imgWidth === NULL)
+    {
+        $imgWidth = 186;
+    }
+    else
+    {
+        $imgWidth = intval($imgWidth);
+    }
+
+    // If keep aspect ratio, delete height
+    if ($keepAspectRatio)
+    {
+        $imgHeight = 0;
+    }
+    else
+    {
+        $imgHeight = $imgWidth;
+    }
+
+    // If height parameter exists, it overrides current value of height
+    if ($this->getData('img_height') !== NULL)
+    {
+        $imgHeight = intval($this->getData('img_height'));
+    }
+
+    // Size of item's elements
+    $size = $this->getSize();
+    if ($size)
+    {
+        $gridClasses = ' ' . $size;
+    }
+    else
+    {
+        if (isset($showItems))
+        {
+            if ($showItems >= 8)
+            {
+                $gridClasses = ' size-xs';
+            }
+            elseif ($showItems >= 6)
+            {
+                $gridClasses = ' size-s';
+            }
+        }
+    }
+
+    // Align elements to the center
+    if ($this->getCentered())
+    {
+        $gridClasses.= ' centered';
+    }
+    ?>
+
+    <?php 
+        $containerClasses = 'itemslider' . $sliderClasses . ' slider-arrows1 slider-arrows1-pos-top-right slider-pagination1';
+    ?>
+    <?php if ($type == 'related' || $type == 'upsell'): ?>
+        <?php if ($type == 'related'): ?>
+            <div class="block <?php /* @escapeNotVerified */ echo $class; ?> <?php echo $containerClasses; ?>" data-mage-init='{"relatedProducts":{"relatedCheckbox":".related.checkbox"}}' data-limit="<?php /* @escapeNotVerified */ echo $limit; ?>" data-shuffle="<?php /* @escapeNotVerified */ echo $shuffle; ?>">
+        <?php else: ?>
+            <div class="block <?php /* @escapeNotVerified */ echo $class; ?> <?php echo $containerClasses; ?>" data-mage-init='{"upsellProducts":{}}' data-limit="<?php /* @escapeNotVerified */ echo $limit; ?>" data-shuffle="<?php /* @escapeNotVerified */ echo $shuffle; ?>">
+        <?php endif; ?>
+    <?php else: ?>
+        <div class="block <?php /* @escapeNotVerified */ echo $class; ?> <?php echo $containerClasses; ?>">
+    <?php endif; ?>
+    <div class="block-title title">
+        <strong id="block-<?php /* @escapeNotVerified */ echo $class?>-heading" role="heading" aria-level="2"><?php /* @escapeNotVerified */ echo $title; ?></strong>
+        <?php if ($type == 'related' && $canItemsAddToCart): ?>
+            <div class="block-actions">
+                <?php /* @escapeNotVerified */ echo __('Check items to add to the cart or') ?>
+                <button type="button" class="action select" role="select-all"><span><?php /* @escapeNotVerified */ echo __('select all') ?></span></button>
+            </div>
+        <?php endif; ?>
+    </div>
+    <div class="block-content content" aria-labelledby="block-<?php /* @escapeNotVerified */ echo $class?>-heading">
+        <div class="products wrapper grid products-grid products-<?php /* @escapeNotVerified */ echo $type; ?> <?php if ($gridClasses) echo $gridClasses; ?>">
+            <div id="<?php echo $sliderId; ?>" class="products list items product-items"> <?php /* <div class="products list items product-items"> */ ?>
+                <?php $iterator = 1; ?>
+                <?php foreach ($items as $_item): ?>
+                <?php $available = ''; ?>
+                <?php if ($canItemsAddToCart && !$_item->isComposite() && $_item->isSaleable() && $type == 'related'): ?>
+                    <?php if (!$_item->getRequiredOptions()): ?>
+                        <?php $available = 'related-available'; ?>
+                    <?php endif; ?>
+                <?php endif; ?>
+                <?php /*
+                <?php if ($type == 'related' || $type == 'upsell'): ?>
+                    <?php echo($iterator++ == 1) ? '<li class="item product product-item" style="display: none;">' : '</li><li class="item product product-item" style="display: none;">' ?>
+                <?php else: ?>
+                    <?php echo($iterator++ == 1) ? '<li class="item product product-item">' : '</li><li class="item product product-item">' ?>
+                <?php endif; ?>
+                */ ?>
+                <?php echo($iterator++ == 1) ? '<div class="item">' : '</div><div class="item">' ?>
+                <div class="product-item-info <?php /* @escapeNotVerified */ echo $available; ?>">
+                    <?php /* @escapeNotVerified */ echo '<!-- ' . $image . '-->' ?>
+                    <a href="<?php /* @escapeNotVerified */ echo $block->getProductUrl($_item) ?>" class="product photo product-item-photo">
+                        <?php echo $block->getImage($_item, $image)->toHtml(); ?>
+                    </a>
+                    <div class="product details product-item-details">
+                        <strong class="product name product-item-name"><a class="product-item-link" title="<?php echo $block->escapeHtml($_item->getName()) ?>" href="<?php /* @escapeNotVerified */ echo $block->getProductUrl($_item) ?>">
+                            <?php echo $block->escapeHtml($_item->getName()) ?></a>
+                        </strong>
+
+                        <?php /* @escapeNotVerified */ echo $block->getProductPrice($_item); ?>
+
+                        <?php if ($templateType): ?>
+                            <?php echo $block->getReviewsSummaryHtml($_item, $templateType) ?>
+                        <?php endif; ?>
+
+                        <?php if ($canItemsAddToCart && !$_item->isComposite() && $_item->isSaleable() && $type == 'related'): ?>
+                            <?php if (!$_item->getRequiredOptions()): ?>
+                                <div class="field choice related">
+                                    <input type="checkbox" class="checkbox related" id="related-checkbox<?php /* @escapeNotVerified */ echo $_item->getId() ?>" name="related_products[]" value="<?php /* @escapeNotVerified */ echo $_item->getId() ?>" />
+                                    <label class="label" for="related-checkbox<?php /* @escapeNotVerified */ echo $_item->getId() ?>"><span><?php /* @escapeNotVerified */ echo __('Add to Cart') ?></span></label>
+                                </div>
+                            <?php endif; ?>
+                        <?php endif; ?>
+
+                        <?php if ($showWishlist || $showCompare || $showCart): ?>
+                            <div class="product actions product-item-actions">
+                                <?php if ($showCart): ?>
+                                    <div class="actions-primary">
+                                        <?php if ($_item->isSaleable()): ?>
+                                            <?php if ($_item->getTypeInstance()->hasRequiredOptions($_item)): ?>
+                                                <button class="action tocart primary" data-mage-init='{"redirectUrl": {"url": "<?php /* @escapeNotVerified */ echo $block->getAddToCartUrl($_item) ?>"}}' type="button" title="<?php /* @escapeNotVerified */ echo __('Add to Cart') ?>">
+                                                    <span><?php /* @escapeNotVerified */ echo __('Add to Cart') ?></span>
+                                                </button>
+                                            <?php else: ?>
+                                                <?php $postDataHelper = $this->helper('Magento\Framework\Data\Helper\PostHelper');
+                                                $postData = $postDataHelper->getPostData($block->getAddToCartUrl($_item), ['product' => $_item->getEntityId()])
+                                                ?>
+                                                <button class="action tocart primary"
+                                                        data-post='<?php /* @escapeNotVerified */ echo $postData; ?>'
+                                                        type="button" title="<?php /* @escapeNotVerified */ echo __('Add to Cart') ?>">
+                                                    <span><?php /* @escapeNotVerified */ echo __('Add to Cart') ?></span>
+                                                </button>
+                                            <?php endif; ?>
+                                        <?php else: ?>
+                                            <?php if ($_item->getIsSalable()): ?>
+                                                <div class="stock available"><span><?php /* @escapeNotVerified */ echo __('In stock') ?></span></div>
+                                            <?php else: ?>
+                                                <div class="stock unavailable"><span><?php /* @escapeNotVerified */ echo __('Out of stock') ?></span></div>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+
+                                <?php if ($showWishlist || $showCompare): ?>
+                                    <div class="secondary-addto-links actions-secondary" data-role="add-to-links">
+                                        <?php if ($this->helper('Magento\Wishlist\Helper\Data')->isAllow() && $showWishlist): ?>
+                                            <a href="#" data-post='<?php /* @escapeNotVerified */ echo $block->getAddToWishlistParams($_item); ?>'  class="action towishlist" data-action="add-to-wishlist" title="<?php /* @escapeNotVerified */ echo __('Add to Wish List') ?>">
+                                                <span><?php /* @escapeNotVerified */ echo __('Add to Wish List') ?></span>
+                                            </a>
+                                        <?php endif; ?>
+                                        <?php if ($block->getAddToCompareUrl() && $showCompare): ?>
+                                            <?php
+                                            $compareHelper = $this->helper('Magento\Catalog\Helper\Product\Compare');
+                                            ?>
+                                            <a href="#" class="action tocompare"
+                                               data-post='<?php /* @escapeNotVerified */ echo $compareHelper->getPostDataParams($_item);?>'
+                                               data-role="add-to-links"
+                                               title="<?php /* @escapeNotVerified */ echo __('Add to Compare'); ?>">
+                                                <span><?php /* @escapeNotVerified */ echo __('Add to Compare') ?></span>
+                                            </a>
+                                        <?php endif; ?>
+                                    </div>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
+
+                    </div> <!-- end: product-item-details -->
+                </div> <!-- end: product-item-info -->
+                <?php echo ($iterator == count($items)+1) ? '</div>' : '' ?>
+                <?php endforeach ?>
+            </div> <!-- end: element with the itemslider ID -->
+        </div> <!-- end: products-grid -->
+    </div> <!-- end: block-content -->
+</div>
+<script type="text/javascript">
+//<![CDATA[
+
+    requirejs(['jquery','owlcarousel'], function(jQuery, owl)
+    {
+        jQuery(function($) {
+            var owl = $('#<?php echo $sliderId; ?>');
+            owl.owlCarousel({
+
+                <?php if ($lazy): ?>
+                    lazyLoad: true,
+                <?php endif; ?> 
+                <?php if(!$isResponsive): ?>
+                    responsive: false,
+                    items: <?php echo $showItems; ?>,
+                <?php else: ?>
+                    itemsCustom: [ <?php echo $breakpoints; ?> ],
+                    responsiveRefreshRate: 50,
+                <?php endif; ?> 
+                <?php if ($speed): ?>
+                    slideSpeed: <?php echo $speed; ?>,
+                <?php endif; ?> 
+                <?php if ($autoSpeed): ?>
+                    paginationSpeed: <?php echo $autoSpeed; ?>,
+                <?php endif; ?> 
+                <?php if ($move !== 1): ?>
+                    scrollPerPage: true,
+                <?php endif; ?> 
+                <?php if ($timeout): ?>
+                    autoPlay: <?php echo $timeout; ?>,
+                <?php endif; ?> 
+                <?php if ($pause): ?>
+                    stopOnHover: true,
+                <?php endif; ?> 
+                <?php if ($loop): ?>
+                    rewindNav: true,
+                    rewindSpeed: 600,
+                <?php else: ?>
+                    rewindNav: false,
+                <?php endif; ?> 
+                <?php if ($pagination): ?>
+                    pagination: true,
+                <?php else: ?>
+                    pagination: false,
+                <?php endif; ?>
+                    navigation: true,
+                    navigationText: false
+
+            });
+        });
+    });
+
+//]]>
+</script>
+<?php endif;?>

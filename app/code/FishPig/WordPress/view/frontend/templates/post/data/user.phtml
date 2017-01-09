@@ -1,0 +1,8 @@
+<?php
+/**
+ *
+**/
+?>
+<?php if ($post = $this->getPost()): ?>
+	<div class="post-user post-meta-item"><strong><?php echo __('By') ?>:</strong> <span class="meat-user-name"><?php echo $post->getUser() ->getDisplayName() ?></span></div>
+<?php endif; ?>
